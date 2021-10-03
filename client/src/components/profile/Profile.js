@@ -10,7 +10,6 @@ const Profile = () => {
   const [userPicture, setUserPicture] = useState([])
   const [postsNumber, setPostsNumber] = useState(0)
   const userId = JSON.parse(localStorage.getItem('id'))
-  console.log(userId)
   const fetchMyPosts = async () => {
     try {
       const response = await axios.get(
@@ -18,15 +17,14 @@ const Profile = () => {
       )
       const userPictures = response.data
       setPostsNumber(userPictures.length)
-      console.log(userPictures)
       setUserPicture(userPictures)
     } catch (err) {
       console.log(err)
     }
   }
   useEffect(() => {
-    console.log('useEffect called')
     fetchMyPosts()
+    // eslint-disable-next-line
   }, [])
   const [display, setDisplay] = useState(false)
   const fullName = JSON.parse(localStorage.getItem('fullName'))

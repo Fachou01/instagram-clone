@@ -40,6 +40,7 @@ const SingleItem = ({
   }
   useEffect(() => {
     getLike()
+    // eslint-disable-next-line
   }, [])
 
   const handleLikes = async () => {

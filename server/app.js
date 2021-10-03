@@ -21,7 +21,7 @@ mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
 });
 
-app.post("/profile/addpost", auth, async (req, res) => {
+app.post("/profile/addpost", async (req, res) => {
   const id = req.body.id;
   const title = req.body.title;
   const image = req.body.image;
@@ -33,10 +33,11 @@ app.post("/profile/addpost", auth, async (req, res) => {
     description: description,
   });
   try {
-    response = await newPosts.save();
+    const response = await newPosts.save();
     res.json(response);
   } catch (error) {
-    res.status(500).json(error);
+    //res.status(500).json(error);
+    console.log(error);
   }
 });
 

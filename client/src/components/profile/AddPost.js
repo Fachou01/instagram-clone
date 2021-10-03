@@ -12,15 +12,22 @@ const AddPost = () => {
     if (displayCard === true) setDisplayCard(false)
     else setDisplayCard(true)
   }
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault()
     const id = JSON.parse(localStorage.getItem('id'))
-    console.log(id)
-    const response = await axios.post('http://localhost:3001/profile/addpost', {
-      id: id,
-      title: title,
-      image: image,
-      description: description,
-    })
+    try {
+      const resp = await axios.post('http://localhost:3001/profile/addpost', {
+        id: id,
+        title: title,
+        image: image,
+        description: description,
+      })
+      console.log(resp)
+      setDisplayCard(!displayCard)
+      window.location.reload()
+    } catch (error) {
+      console.log(error)
+    }
   }
   return (
     <div className={!displayCard ? 'hidden' : 'flex'}>
