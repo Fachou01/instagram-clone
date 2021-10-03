@@ -118,9 +118,12 @@ app.post("/getlike", async (req, res) => {
         message: "Likes found",
       });
     } else {
-      res.status(201);
+      res.status(200).json({
+        message: "Likes not found",
+      });
     }
   } catch (error) {
+    console.log(error);
     response.status(401).json({
       message: "error in db",
     });

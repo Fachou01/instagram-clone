@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import Navbar from '../shared/Navbar'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCog, faPlusSquare } from '@fortawesome/free-solid-svg-icons'
@@ -7,6 +7,7 @@ import AddPost from './AddPost'
 import axios from 'axios'
 
 const Profile = () => {
+  const myRef = useRef(null)
   const [userPicture, setUserPicture] = useState([])
   const [postsNumber, setPostsNumber] = useState(0)
   const userId = JSON.parse(localStorage.getItem('id'))
@@ -16,14 +17,16 @@ const Profile = () => {
         `http://localhost:3001/myposts/${userId}`
       )
       const userPictures = response.data
-      setPostsNumber(userPictures.length)
-      setUserPicture(userPictures)
+      if (myRef.current) setPostsNumber(userPictures.length)
+      if (myRef.current) setUserPicture(userPictures)
     } catch (err) {
       console.log(err)
     }
   }
   useEffect(() => {
-    fetchMyPosts()
+    if (myRef.current) {
+      fetchMyPosts()
+    }
     // eslint-disable-next-line
   }, [])
   const [display, setDisplay] = useState(false)
@@ -38,7 +41,7 @@ const Profile = () => {
     }
   }
   return (
-    <div>
+    <div ref={myRef}>
       <Navbar />
       <div>
         <div className="flex flex-col px px-6 py-12 ">

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons'
@@ -19,27 +19,31 @@ const SingleItem = ({
   description,
   picture,
 }) => {
+  const myRef = useRef(null)
   const [userComments, setUserComments] = useState([])
   const [likes, setLikes] = useState(reacts)
   const [likesColor, setLikesColor] = useState(false)
   const [comment, setComment] = useState('')
 
   const getLike = async () => {
-    const userId = JSON.parse(localStorage.getItem('id'))
-    const response = await axios.post('http://localhost:3001/getlike', {
-      userId: userId,
-      postId: id,
-    })
-    console.log(response.data)
-    console.log('hello')
-    if (response.status === 200) {
-      setLikesColor(true)
-    } else {
-      setLikesColor(false)
+    const userId = await JSON.parse(localStorage.getItem('id'))
+    try {
+      const response = await axios.post('http://localhost:3001/getlike', {
+        userId: userId,
+        postId: id,
+      })
+      if (response.data.message === 'Likes found') {
+        if (myRef.current) setLikesColor(true)
+      } else {
+        if (myRef.current) setLikesColor(false)
+      }
+    } catch (error) {
+      console.log(error)
     }
   }
+
   useEffect(() => {
-    getLike()
+    if (myRef.current) getLike()
     // eslint-disable-next-line
   }, [])
 
@@ -48,14 +52,18 @@ const SingleItem = ({
     if (likesColor === false) {
       setLikes(likes + 1)
       setLikesColor(true)
-      await axios.put('http://localhost:3001/addlike', {
-        id: id,
-        like: 1,
-      })
-      await axios.post('http://localhost:3001/addlike/likes', {
-        userId: userId,
-        postId: id,
-      })
+      try {
+        await axios.put('http://localhost:3001/addlike', {
+          id: id,
+          like: 1,
+        })
+        await axios.post('http://localhost:3001/addlike/likes', {
+          userId: userId,
+          postId: id,
+        })
+      } catch (error) {
+        console.log(error)
+      }
     } else {
       setLikes(likes - 1)
       setLikesColor(false)
@@ -79,7 +87,10 @@ const SingleItem = ({
     setComment('')
   }
   return (
-    <div className="flex flex-col justify-between border-2 border-black-100  rounded-lg mb-5">
+    <div
+      className="flex flex-col justify-between border-2 border-black-100  rounded-lg mb-5"
+      ref={myRef}
+    >
       <div className="flex justify-between items-center p-3">
         <div className="flex items-center">
           <img

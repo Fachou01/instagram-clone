@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import SingleItem from './SingleItem'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import Loader from 'react-loader-spinner'
 const Item = () => {
+  const myRef = useRef(null)
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
 
@@ -11,20 +12,20 @@ const Item = () => {
     setLoading(true)
     try {
       const response = await axios.get('http://localhost:3001/getposts')
-      console.log(response)
-      setData(response.data)
       setLoading(false)
+      if (myRef.current) setData(response.data)
     } catch (err) {
       console.log(err)
     }
   }
   useEffect(() => {
-    console.log('useEffect called')
-    fetchPosts()
+    if (myRef.current) {
+      fetchPosts()
+    }
   }, [])
   if (loading === false) {
     return (
-      <div className="main mt-3 ">
+      <div className="main mt-3 " ref={myRef}>
         {data.map((post, key) => {
           return (
             <SingleItem
