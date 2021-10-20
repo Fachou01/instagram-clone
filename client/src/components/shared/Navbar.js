@@ -5,11 +5,16 @@ import {
   faPaperPlane,
   faCompass,
   faHeart,
+  faSignOutAlt,
 } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom'
 
 const Navbar = () => {
   const picture = JSON.parse(localStorage.getItem('picture'))
+
+  const signOut = () => {
+    localStorage.clear()
+  }
   return (
     <div className="flex sticky top-0 w-full bg-white justify-between items-center border-b-2 border-black-100 h-20  p-5  ">
       <Link to="/main">
@@ -43,18 +48,31 @@ const Navbar = () => {
             />
           </div>
         </Link>
-        <div className="flex items-center justify-center rounded-full bg-gray-200 w-10 h-10 hover:text-red-600 cursor-pointer">
+        <div className="flex opacity-50  items-center justify-center rounded-full bg-gray-200 w-10 h-10 hover:text-red-600 cursor-pointer">
           <FontAwesomeIcon icon={faPaperPlane} className="text-xl  " />
         </div>
-        <div className="flex items-center justify-center rounded-full bg-gray-200 w-10 h-10 hover:text-red-600 cursor-pointer">
+
+        {/*<div className="flex items-center justify-center rounded-full bg-gray-200 w-10 h-10 hover:text-red-600 cursor-pointer">
           <FontAwesomeIcon
             icon={faCompass}
             className="text-xl cursor-pointer "
           />
-        </div>
-        <div className="flex items-center justify-center rounded-full bg-gray-200 w-10 h-10 hover:text-red-600 cursor-pointer">
+        </div>*/}
+
+        <div className="flex opacity-50 items-center justify-center rounded-full bg-gray-200 w-10 h-10 hover:text-red-600 cursor-pointer">
           <FontAwesomeIcon icon={faHeart} className="text-xl cursor-pointer " />
         </div>
+        <Link to="/login">
+          <div
+            className="flex items-center justify-center rounded-full bg-gray-200 w-10 h-10 hover:text-red-600 cursor-pointer"
+            onClick={signOut}
+          >
+            <FontAwesomeIcon
+              icon={faSignOutAlt}
+              className="text-xl cursor-pointer "
+            />
+          </div>
+        </Link>
         <Link to="/profile">
           <img
             src={picture}

@@ -4,12 +4,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCog, faPlusSquare } from '@fortawesome/free-solid-svg-icons'
 import { useState, useEffect } from 'react'
 import AddPost from './AddPost'
+import ShowPost from './ShowPost'
 import axios from 'axios'
 
 const Profile = () => {
   const myRef = useRef(null)
+  const [pictureP, setPictureP] = useState('')
+  const [idP, setIdP] = useState('')
   const [userPicture, setUserPicture] = useState([])
   const [postsNumber, setPostsNumber] = useState(0)
+  const [likes, setLikes] = useState(0)
   const userId = JSON.parse(localStorage.getItem('id'))
   const fetchMyPosts = async () => {
     try {
@@ -23,6 +27,21 @@ const Profile = () => {
       console.log(err)
     }
   }
+  const show = (id, picture, likes) => {
+    console.log(id)
+    setIdP(id)
+    setPictureP(picture)
+    setLikes(likes)
+    console.log(likes)
+    console.log(picture)
+  }
+  const handleShowPost = (state) => {
+    if (state === true) {
+      setDisplayPost(true)
+    } else {
+      setDisplayPost(false)
+    }
+  }
   useEffect(() => {
     if (myRef.current) {
       fetchMyPosts()
@@ -30,6 +49,7 @@ const Profile = () => {
     // eslint-disable-next-line
   }, [])
   const [display, setDisplay] = useState(false)
+  const [displayPost, setDisplayPost] = useState(false)
   const fullName = JSON.parse(localStorage.getItem('fullName'))
   const userName = JSON.parse(localStorage.getItem('userName'))
   const picture = JSON.parse(localStorage.getItem('picture'))
@@ -101,7 +121,7 @@ const Profile = () => {
               </div>
             </div>
           </div>
-          <div className="flex gap-3 px-16 mb-8">
+          {/*<div className="flex gap-3 px-16 mb-8">
             <div className="flex flex-col justify-center items-center cursor-pointer p-3">
               <img
                 src="https://avatars.dicebear.com/api/croodles/koumenji.svg"
@@ -134,7 +154,7 @@ const Profile = () => {
               />
               <p className="text-xs mt-1 font-semibold">Trip</p>
             </div>
-          </div>
+          </div>*/}
           <div className="flex justify-evenly   border-t-2 border-gray-200 mb-5 ">
             <div className="text-black mt-5">POSTS</div>
             <div className="text-gray-400 mt-5">IGTV</div>
@@ -144,12 +164,31 @@ const Profile = () => {
           <div className="grid grid-cols-3 max-h-80 gap-2 ">
             {userPicture.map((element, key) => {
               return (
-                <div className="col-span-1" key={element._id}>
-                  <img className="h-60 w-full" src={element.image} alt="" />
+                <div
+                  className="col-span-1 cursor-pointer"
+                  key={element._id}
+                  onClick={(e) => {
+                    show(element._id, element.image, element.likes)
+                    handleShowPost(true)
+                  }}
+                >
+                  <img
+                    className="h-80  w-full object-cover	"
+                    src={element.image}
+                    alt=""
+                  />
                 </div>
               )
             })}
           </div>
+          {displayPost === true && (
+            <ShowPost
+              id={idP}
+              picture={pictureP}
+              handlePost={handleShowPost}
+              reacts={likes}
+            />
+          )}
         </div>
         {display === true && <AddPost />}
       </div>

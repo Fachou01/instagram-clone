@@ -9,6 +9,7 @@ import {
   faComment,
   faBookmark,
   faSmile,
+  faTrashAlt,
 } from '@fortawesome/free-regular-svg-icons'
 
 const SingleItem = ({
@@ -41,9 +42,29 @@ const SingleItem = ({
       console.log(error)
     }
   }
+  const getComment = async () => {
+    try {
+      const response = await axios.post('http://localhost:3001/getcomment', {
+        postId: id,
+      })
+
+      setUserComments(response.data)
+      console.log(response)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  const deleteComment = async (com) => {
+    await axios.post('http://localhost:3001/removecomment', {
+      commId: com,
+    })
+    const newComments = userComments.filter((elt) => elt._id !== com)
+    setUserComments(newComments)
+  }
 
   useEffect(() => {
     if (myRef.current) getLike()
+    if (myRef.current) getComment()
     // eslint-disable-next-line
   }, [])
 
@@ -77,14 +98,30 @@ const SingleItem = ({
       })
     }
   }
-  const handleComments = (e) => {
+  const handleComments = async (e) => {
+    const userId = JSON.parse(window.localStorage.getItem('id'))
+    const userUsername = JSON.parse(window.localStorage.getItem('userName'))
     e.preventDefault()
-    const comm = {
-      name: user,
-      commentaire: comment,
+    try {
+      const response = await axios.post('http://localhost:3001/addcomment', {
+        userId: userId,
+        postId: id,
+        comment: comment,
+      })
+
+      const comm = {
+        _id: response.data._id,
+        userId: {
+          _id: userId,
+          userName: userUsername,
+        },
+        description: comment,
+      }
+      setUserComments([...userComments, comm])
+      setComment('')
+    } catch (error) {
+      console.log(error)
     }
-    setUserComments([...userComments, comm])
-    setComment('')
   }
   return (
     <div
@@ -96,7 +133,7 @@ const SingleItem = ({
           <img
             src={userPicture}
             width="45"
-            className="rounded-full border-2 border-gray-200"
+            className="rounded-full border-2  border-gray-200"
             alt=""
           />
           <p className="text-xs ml-3 font-semibold">{user}</p>
@@ -151,9 +188,19 @@ const SingleItem = ({
       <div>
         {userComments.map((com) => {
           return (
-            <div className="px-3 pt-2 text-sm flex gap-2">
-              <div className="font-semibold">{com.name} :</div>
-              <div>{com.commentaire}</div>
+            <div className="flex justify-between items-center">
+              <div className="px-3 pt-2 text-sm flex gap-2" key={com._id}>
+                <div className="font-semibold">{com.userId.userName} :</div>
+                <div>{com.description}</div>
+              </div>
+              {com.userId._id === JSON.parse(localStorage.getItem('id')) && (
+                <div className="px-3" onClick={() => deleteComment(com._id)}>
+                  <FontAwesomeIcon
+                    icon={faTrashAlt}
+                    className="text-sm cursor-pointer "
+                  />
+                </div>
+              )}
             </div>
           )
         })}

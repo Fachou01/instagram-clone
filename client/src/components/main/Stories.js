@@ -2,7 +2,7 @@ import React from 'react'
 
 const Stories = () => {
   return (
-    <div className="flex  border-2 border-black-100 p-5 overflow-hidden gap-3 rounded-lg">
+    <div className="flex   border-2 border-black-100 p-5 overflow-hidden gap-3 rounded-lg">
       <div className="flex flex-col justify-center items-center cursor-pointer">
         <img
           src="https://avatars.dicebear.com/api/croodles/koumenji.svg"

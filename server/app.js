@@ -7,6 +7,7 @@ const mongoose = require("mongoose");
 const PostModel = require("./models/posts");
 const User = require("./models/user");
 const Likes = require("./models/likes");
+const Comment = require("./models/comments");
 const dotenv = require("dotenv");
 const { response } = require("express");
 dotenv.config({ path: "./config/config.env" });
@@ -186,7 +187,7 @@ app.post("/removelike/likes", async (req, res) => {
   const postId = req.body.postId;
 
   try {
-    const response = await Likes.remove({ userId: userId, postId: postId });
+    const response = await Likes.deleteOne({ userId: userId, postId: postId });
     res.status(200).json(response);
   } catch (err) {
     res.status(500).json(error);
@@ -211,9 +212,56 @@ app.get("/myposts/:id", async (req, res) => {
   try {
     const id = req.params.id;
     result = await PostModel.find({ userId: id });
-    console.log(result);
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json(error);
+  }
+});
+app.post("/addcomment", async (req, res) => {
+  const userId = req.body.userId;
+  const postId = req.body.postId;
+  const comment = req.body.comment;
+  const newComment = new Comment({
+    userId: userId,
+    postId: postId,
+    description: comment,
+  });
+  try {
+    const response = await newComment.save();
+    res.status(200).json(response);
+  } catch (err) {
+    res.status(500).json(error);
+    console.log(err);
+  }
+});
+
+app.post("/getcomment", async (req, res) => {
+  const postId = req.body.postId;
+
+  try {
+    result = await Comment.find({ postId: postId }).populate("userId");
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(200).json(error);
+  }
+});
+
+app.post("/removecomment", async (req, res) => {
+  const commId = req.body.commId;
+  try {
+    const response = await Comment.deleteOne({ _id: commId });
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(200).json(error);
+  }
+});
+
+app.get("/profilepost/:id", async (req, res) => {
+  const postId = req.params.id;
+  try {
+    result = await Comment.find({ postId: postId }).populate("userId");
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(200).json(error);
   }
 });

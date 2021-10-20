@@ -11,7 +11,6 @@ const Main = () => {
   return (
     <div className="mt-8 lg:grid grid-cols-3 gap-6 ">
       <div className="col-span-2">
-        <Stories />
         <Item />
       </div>
 
