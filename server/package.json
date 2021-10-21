@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "start": "node index.js",
-    "devStart": "nodemon index.js"
+    "devStart": "nodemon index.js",
+    "socketStart" : "nodemon chat.js"
   },
   "author": "",
   "license": "ISC",
@@ -16,7 +17,8 @@
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.0.6"
+    "mongoose": "^6.0.6",
+    "socket.io": "^4.3.1"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",

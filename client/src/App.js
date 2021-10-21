@@ -4,6 +4,7 @@ import Login from './components/login/Login'
 import Registre from './components/registre/Registre'
 import Profile from './components/profile/Profile'
 import Error from './components/Error/Error'
+import MainChat from './components/chat/MainChat'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 
 const App = () => {
@@ -31,7 +32,9 @@ const App = () => {
           </div>
         </Route>
         <Route path="/chat">
-          <div className="lg:mx-48 "></div>
+          <div className="lg:mx-48 ">
+            <MainChat />
+          </div>
         </Route>
         <Route path="*">
           <div className="lg:mx-48 h-screen">

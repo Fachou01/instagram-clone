@@ -48,9 +48,11 @@ const Navbar = () => {
             />
           </div>
         </Link>
-        <div className="flex opacity-50  items-center justify-center rounded-full bg-gray-200 w-10 h-10 hover:text-red-600 cursor-pointer">
-          <FontAwesomeIcon icon={faPaperPlane} className="text-xl  " />
-        </div>
+        <Link to="/chat">
+          <div className="flex   items-center justify-center rounded-full bg-gray-200 w-10 h-10 hover:text-red-600 cursor-pointer">
+            <FontAwesomeIcon icon={faPaperPlane} className="text-xl  " />
+          </div>
+        </Link>
 
         {/*<div className="flex items-center justify-center rounded-full bg-gray-200 w-10 h-10 hover:text-red-600 cursor-pointer">
           <FontAwesomeIcon
