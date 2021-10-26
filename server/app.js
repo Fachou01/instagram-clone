@@ -325,8 +325,10 @@ app.get("/getconversation/:id", async (req, res) => {
   const conversationId = req.params.id;
 
   try {
-    const response = await Messages.find({ conversationId: conversationId });
-    //console.log(response);
+    const response = await Messages.find({
+      conversationId: conversationId,
+    }).populate("senderId");
+
     res.status(200).json(response);
   } catch (error) {
     console.log(error);

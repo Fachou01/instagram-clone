@@ -35,32 +35,29 @@ const MainChat = () => {
   const handleConversationData = async (id, userUserName, picture) => {
     setActiveConversation(true)
     try {
-      const response = await axios.post(
+      const response1 = await axios.post(
         'http://localhost:3001/addconversation',
         {
           user1Id: userId,
           user2Id: id,
         }
       )
-      console.log(response)
-      setConversationId(response.data._id)
-      console.log(conversationId)
-      if (response.data.user1 !== userId) {
-        setReceiver(response.data.user1)
-      } else {
-        setReceiver(response.data.user2)
-      }
-      setChat(response.data._id)
+      console.log(response1.data)
+      setConversationId(response1.data._id)
       //console.log(conversationId)
-    } catch (error) {
-      console.log(error)
-    }
-    try {
+      if (response1.data.user1 !== userId) {
+        setReceiver(response1.data.user1)
+      } else {
+        setReceiver(response1.data.user2)
+      }
+      setChat(response1.data._id)
+      //console.log(conversationId)
+
       const response = await axios.get(
-        `http://localhost:3001/getconversation/${conversationId}`
+        `http://localhost:3001/getconversation/${response1.data._id}`
       )
       setMessageList(response.data)
-      //console.log(messageList)
+      console.log(messageList)
     } catch (error) {
       console.log(error)
     }
@@ -76,7 +73,7 @@ const MainChat = () => {
   const sendMessage = async () => {
     const messageContent = {
       conversationId: chat,
-      senderId: userId,
+      senderId: { _id: userId, userPicture: picture },
       receiverId: receiver,
       text: message,
     }
@@ -98,7 +95,7 @@ const MainChat = () => {
     socket.on('receive_message', (data) => {
       console.log(data)
       setSender(data.senderName)
-      if (data.senderId === receiver) {
+      if (data.senderId._id === receiver) {
         setMessageList([...messageList, data])
       }
     })
@@ -149,8 +146,8 @@ const MainChat = () => {
             })}
           </div>
         </div>
-        <div className="col-span-3 flex flex-col justify-between   ">
-          <div className="flex flex-col justify-center  mt-7 ">
+        <div className="col-span-3 flex flex-col justify-between relative z-10   ">
+          <div className="flex flex-col justify-center   mt-7 ">
             {!activeConversation ? (
               <div className="flex flex-col items-center mt-16">
                 <div className="rounded-3xl border-2 border-black p-3 ">
@@ -162,12 +159,12 @@ const MainChat = () => {
             ) : (
               <React.Fragment>
                 {messageList.map((msg, key) => {
-                  if (msg.senderId === userId) {
+                  if (msg.senderId._id === userId) {
                     return (
                       <div className="flex items-center ml-5 mb-3" key={key}>
                         <div>
                           <img
-                            //src={msg.senderPicture}
+                            src={msg.senderId.userPicture}
                             width="50"
                             className="rounded-full flex-grow-0"
                             alt=""
@@ -176,7 +173,7 @@ const MainChat = () => {
                         <div className="ml-1">
                           {/*<p className="text-xs mt-1  cursor-pointer">issam_koumenji</p>*/}
 
-                          <div className="  bg-red-500 rounded-xl p-2 text-white  ">
+                          <div className="  bg-red-500 rounded-xl p-2 text-white break-words max-w-xs  ">
                             {msg.text}
                           </div>
                         </div>
@@ -188,20 +185,20 @@ const MainChat = () => {
                         className="flex items-center justify-end ml-5 mb-3 mr-5"
                         key={key}
                       >
+                        <div className="ml-1 ">
+                          {/*<p className="text-xs mt-1  cursor-pointer">issam_koumenji</p>*/}
+
+                          <div className="  bg-gray-200 rounded-xl p-2 break-words max-w-xs ">
+                            {msg.text}
+                          </div>
+                        </div>
                         <div>
                           <img
-                            //src={msg.senderPicture}
+                            src={msg.senderId.userPicture}
                             width="50"
                             className="rounded-full flex-grow-0"
                             alt=""
                           />
-                        </div>
-                        <div className="ml-1">
-                          {/*<p className="text-xs mt-1  cursor-pointer">issam_koumenji</p>*/}
-
-                          <div className="  bg-gray-200 rounded-xl p-2 ">
-                            {msg.text}
-                          </div>
                         </div>
                       </div>
                     )
@@ -211,7 +208,7 @@ const MainChat = () => {
             )}
           </div>
           {activeConversation ? (
-            <div className="flex justify-between items-center p-3 mt-3 border-2 rounded-lg border-black-100">
+            <div className="flex justify-between absolute z-20 bottom-0 w-full items-center p-3 mt-3 border-2 rounded-lg border-black-100">
               <div className="flex gap-3">
                 <FontAwesomeIcon
                   icon={faSmile}
