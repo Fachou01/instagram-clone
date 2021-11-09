@@ -45,7 +45,7 @@ const Item = () => {
     return (
       <div className="container">
         <div className="flex justify-center items-center mt-16 ">
-          <Loader type="Puff" color="#D0312D" height={50} width={50} />
+          <Loader type="Oval" color="#D0312D" height={50} width={50} />
         </div>
       </div>
     )

@@ -21,6 +21,7 @@ const SingleItem = ({
   picture,
 }) => {
   const myRef = useRef(null)
+  const commentRef = useRef(null)
   const [userComments, setUserComments] = useState([])
   const [likes, setLikes] = useState(reacts)
   const [likesColor, setLikesColor] = useState(false)
@@ -102,25 +103,28 @@ const SingleItem = ({
     const userId = JSON.parse(window.localStorage.getItem('id'))
     const userUsername = JSON.parse(window.localStorage.getItem('userName'))
     e.preventDefault()
-    try {
-      const response = await axios.post('http://localhost:3001/addcomment', {
-        userId: userId,
-        postId: id,
-        comment: comment,
-      })
+    if (commentRef.current.value !== '') {
+      try {
+        const response = await axios.post('http://localhost:3001/addcomment', {
+          userId: userId,
+          postId: id,
+          comment: comment,
+        })
 
-      const comm = {
-        _id: response.data._id,
-        userId: {
-          _id: userId,
-          userName: userUsername,
-        },
-        description: comment,
+        const comm = {
+          _id: response.data._id,
+          userId: {
+            _id: userId,
+            userName: userUsername,
+          },
+          description: comment,
+        }
+        setUserComments([...userComments, comm])
+        setComment('')
+        commentRef.current.value = ''
+      } catch (error) {
+        console.log(error)
       }
-      setUserComments([...userComments, comm])
-      setComment('')
-    } catch (error) {
-      console.log(error)
     }
   }
   return (
@@ -214,6 +218,7 @@ const SingleItem = ({
               className="text-2xl cursor-pointer "
             />
             <input
+              ref={commentRef}
               type="text"
               placeholder="Add a comment..."
               className="border-0 focus:outline-none text-sm"

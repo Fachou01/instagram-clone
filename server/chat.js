@@ -16,8 +16,6 @@ var users = [
     socketId: "",
   },
 ];
-var userExist = false;
-var userIndex = -1;
 
 const io = require("socket.io")(server, {
   cors: {
@@ -27,28 +25,11 @@ const io = require("socket.io")(server, {
 });
 
 io.on("connection", (socket) => {
-  //console.log(socket.id);
   socket.on("registre", (data) => {
-    //console.log(`hethiya data ${data}`);
-
-    /*users.map((element, index) => {
-      if (element.userId === data) {
-        userIndex = index;
-        return userIndex;
-      }
-    });*/
-    //console.log(userIndex);
     const indexUser = users.findIndex((object) => {
       return object.userId === data;
     });
     if (indexUser === -1) {
-      /*users = [
-        ...users,
-        {
-          userId: data,
-          socketId: socket.id,
-        },
-      ];*/
       users.push({
         userId: data,
         socketId: socket.id,

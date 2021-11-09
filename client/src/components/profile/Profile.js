@@ -6,20 +6,24 @@ import { useState, useEffect } from 'react'
 import AddPost from './AddPost'
 import ShowPost from './ShowPost'
 import axios from 'axios'
+import Loader from 'react-loader-spinner'
 
 const Profile = () => {
   const myRef = useRef(null)
   const [pictureP, setPictureP] = useState('')
   const [idP, setIdP] = useState('')
+  const [loading, setLoading] = useState(false)
   const [userPicture, setUserPicture] = useState([])
   const [postsNumber, setPostsNumber] = useState(0)
   const [likes, setLikes] = useState(0)
   const userId = JSON.parse(localStorage.getItem('id'))
   const fetchMyPosts = async () => {
     try {
+      setLoading(true)
       const response = await axios.get(
         `http://localhost:3001/myposts/${userId}`
       )
+      setLoading(false)
       const userPictures = response.data
       if (myRef.current) setPostsNumber(userPictures.length)
       if (myRef.current) setUserPicture(userPictures)
@@ -161,26 +165,34 @@ const Profile = () => {
             <div className="text-gray-400 mt-5">SAVED</div>
             <div className="text-gray-400 mt-5">TAGGED</div>
           </div>
-          <div className="grid grid-cols-3 max-h-80 gap-2 ">
-            {userPicture.map((element, key) => {
-              return (
-                <div
-                  className="col-span-1 cursor-pointer"
-                  key={element._id}
-                  onClick={(e) => {
-                    show(element._id, element.image, element.likes)
-                    handleShowPost(true)
-                  }}
-                >
-                  <img
-                    className="h-80  w-full object-cover	"
-                    src={element.image}
-                    alt=""
-                  />
-                </div>
-              )
-            })}
-          </div>
+          {loading === true ? (
+            <div className="flex justify-center items-center mt-20 ">
+              <Loader type="Oval" color="#D0312D" height={45} width={45} />
+            </div>
+          ) : (
+            <div className="grid grid-cols-3 max-h-80 gap-2 ">
+              <React.Fragment>
+                {userPicture.map((element, key) => {
+                  return (
+                    <div
+                      className="col-span-1 cursor-pointer"
+                      key={element._id}
+                      onClick={(e) => {
+                        show(element._id, element.image, element.likes)
+                        handleShowPost(true)
+                      }}
+                    >
+                      <img
+                        className="h-80  w-full object-cover	"
+                        src={element.image}
+                        alt=""
+                      />
+                    </div>
+                  )
+                })}
+              </React.Fragment>
+            </div>
+          )}
           {displayPost === true && (
             <ShowPost
               id={idP}

@@ -8,12 +8,13 @@ import {
   faHeart,
   faPaperPlane,
   faComment,
-  faBookmark,
   faSmile,
   faTrashAlt,
 } from '@fortawesome/free-regular-svg-icons'
+import Loader from 'react-loader-spinner'
 
 const ShowPost = ({ id, picture, handlePost, reacts }) => {
+  const [loading, setLoading] = useState(false)
   const [likes, setLikes] = useState(reacts)
   const [likesColor, setLikesColor] = useState(false)
   const [comment, setComment] = useState('')
@@ -21,11 +22,11 @@ const ShowPost = ({ id, picture, handlePost, reacts }) => {
   //const [displayPost, setDisplayPost] = useState(display)
   const profilePost = async () => {
     try {
+      setLoading(true)
       const response = await axios.get(
         `http://localhost:3001/profilepost/${id}`
       )
-
-      console.log(response)
+      setLoading(false)
       setUserComments(response.data)
     } catch (err) {
       console.log(err)
@@ -138,39 +139,47 @@ const ShowPost = ({ id, picture, handlePost, reacts }) => {
             />
             <p className="text-xs ml-3 font-semibold">{userUsername}</p>
           </div>
-          <div className="h-80 overflow-y-scroll w-full">
-            {userComments.map((element) => {
-              return (
-                <div className="flex justify-between items-center">
-                  <div className=" pt-2 text-sm flex gap-2 items-center">
-                    <div className="font-semibold ">
-                      <img
-                        src={element.userId.userPicture}
-                        width="45"
-                        className="rounded-full border-2  border-gray-200"
-                        alt=""
-                      />
+          <div className="h-80 overflow-y-scroll w-full scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-100">
+            {loading === true ? (
+              <div className="flex justify-center items-center mt-5 ">
+                <Loader type="Oval" color="#D0312D" height={35} width={35} />
+              </div>
+            ) : (
+              <React.Fragment>
+                {userComments.map((element) => {
+                  return (
+                    <div className="flex justify-between items-center">
+                      <div className=" pt-2 text-sm flex gap-2 items-center">
+                        <div className="font-semibold ">
+                          <img
+                            src={element.userId.userPicture}
+                            width="45"
+                            className="rounded-full border-2  border-gray-200"
+                            alt=""
+                          />
+                        </div>
+                        <div className="font-semibold ml-1 ">
+                          {element.userId.userName} :
+                        </div>
+                        <div>{element.description}</div>
+                      </div>
+                      {element.userId._id ===
+                        JSON.parse(localStorage.getItem('id')) && (
+                        <div
+                          className="px-3"
+                          onClick={() => deleteComment(element._id)}
+                        >
+                          <FontAwesomeIcon
+                            icon={faTrashAlt}
+                            className="text-sm cursor-pointer "
+                          />
+                        </div>
+                      )}
                     </div>
-                    <div className="font-semibold ml-1 ">
-                      {element.userId.userName} :
-                    </div>
-                    <div>{element.description}</div>
-                  </div>
-                  {element.userId._id ===
-                    JSON.parse(localStorage.getItem('id')) && (
-                    <div
-                      className="px-3"
-                      onClick={() => deleteComment(element._id)}
-                    >
-                      <FontAwesomeIcon
-                        icon={faTrashAlt}
-                        className="text-sm cursor-pointer "
-                      />
-                    </div>
-                  )}
-                </div>
-              )
-            })}
+                  )
+                })}
+              </React.Fragment>
+            )}
           </div>
           <div className="flex justify-between items-center px-3 pt-3">
             <div className="flex">
