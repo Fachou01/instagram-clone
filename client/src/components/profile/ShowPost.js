@@ -19,7 +19,7 @@ const ShowPost = ({ id, picture, handlePost, reacts }) => {
   const [likesColor, setLikesColor] = useState(false)
   const [comment, setComment] = useState('')
   const [userComments, setUserComments] = useState([])
-  //const [displayPost, setDisplayPost] = useState(display)
+
   const profilePost = async () => {
     try {
       setLoading(true)
@@ -38,11 +38,11 @@ const ShowPost = ({ id, picture, handlePost, reacts }) => {
       setLikes(likes + 1)
       setLikesColor(true)
       try {
-        await axios.put('http://localhost:3001/addlike', {
+        await axios.put('http://localhost:3001/like/addlike', {
           id: id,
           like: 1,
         })
-        await axios.post('http://localhost:3001/addlike/likes', {
+        await axios.post('http://localhost:3001/like/addlike/likes', {
           userId: userId,
           postId: id,
         })
@@ -52,11 +52,11 @@ const ShowPost = ({ id, picture, handlePost, reacts }) => {
     } else {
       setLikes(likes - 1)
       setLikesColor(false)
-      await axios.put('http://localhost:3001/removelike', {
+      await axios.put('http://localhost:3001/like/removelike', {
         id: id,
         likes: -1,
       })
-      await axios.post('http://localhost:3001/removelike/likes', {
+      await axios.post('http://localhost:3001/like/removelike/likes', {
         userId: userId,
         postId: id,
       })
@@ -97,7 +97,7 @@ const ShowPost = ({ id, picture, handlePost, reacts }) => {
   const getLike = async () => {
     const userId = await JSON.parse(localStorage.getItem('id'))
     try {
-      const response = await axios.post('http://localhost:3001/getlike', {
+      const response = await axios.post('http://localhost:3001/like/getlike', {
         userId: userId,
         postId: id,
       })

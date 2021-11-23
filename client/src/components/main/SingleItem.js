@@ -30,7 +30,7 @@ const SingleItem = ({
   const getLike = async () => {
     const userId = await JSON.parse(localStorage.getItem('id'))
     try {
-      const response = await axios.post('http://localhost:3001/getlike', {
+      const response = await axios.post('http://localhost:3001/like/getlike', {
         userId: userId,
         postId: id,
       })
@@ -66,7 +66,6 @@ const SingleItem = ({
   useEffect(() => {
     if (myRef.current) getLike()
     if (myRef.current) getComment()
-    // eslint-disable-next-line
   }, [])
 
   const handleLikes = async () => {
@@ -75,11 +74,11 @@ const SingleItem = ({
       setLikes(likes + 1)
       setLikesColor(true)
       try {
-        await axios.put('http://localhost:3001/addlike', {
+        await axios.put('http://localhost:3001/like/addlike', {
           id: id,
           like: 1,
         })
-        await axios.post('http://localhost:3001/addlike/likes', {
+        await axios.post('http://localhost:3001/like/addlike/likes', {
           userId: userId,
           postId: id,
         })
@@ -89,11 +88,11 @@ const SingleItem = ({
     } else {
       setLikes(likes - 1)
       setLikesColor(false)
-      await axios.put('http://localhost:3001/removelike', {
+      await axios.put('http://localhost:3001/like/removelike', {
         id: id,
         likes: -1,
       })
-      await axios.post('http://localhost:3001/removelike/likes', {
+      await axios.post('http://localhost:3001/like/removelike/likes', {
         userId: userId,
         postId: id,
       })

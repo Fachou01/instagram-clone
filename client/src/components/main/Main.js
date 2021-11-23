@@ -52,13 +52,13 @@ const Main = () => {
             </div>
             <div className="text-gray-500 cursor-pointer">See all</div>
           </div>
-          <div>
+          {/*<div>
             <Suggestion />
             <Suggestion />
             <Suggestion />
             <Suggestion />
             <Suggestion />
-          </div>
+          </div>*/}
         </div>
       </div>
     </div>
