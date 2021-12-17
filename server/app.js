@@ -11,6 +11,8 @@ const likes = require("./routes/likes");
 const login = require("./routes/login");
 const conversation = require("./routes/conversation");
 const comments = require("./routes/comments");
+const friends = require("./routes/friends");
+const UserSearsh = require("./routes/users");
 //
 dotenv.config({ path: "./config/config.env" });
 
@@ -37,6 +39,10 @@ app.use("/", myPosts);
 app.use("/", comments);
 
 app.use("/", conversation);
+
+app.use("/", friends);
+
+app.use("/", UserSearsh);
 
 app.listen(3001, () => {
   console.log("listening to port 3001");

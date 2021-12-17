@@ -1,6 +1,7 @@
 import React from 'react'
 import Stories from './Stories'
 import Item from './Item'
+import { useEffect, useState } from 'react'
 import Suggestion from './Suggestion'
 import { Link } from 'react-router-dom'
 
@@ -8,10 +9,41 @@ const Main = () => {
   const fullName = JSON.parse(localStorage.getItem('fullName'))
   const userName = JSON.parse(localStorage.getItem('userName'))
   const picture = JSON.parse(localStorage.getItem('picture'))
+  const [feed, setFeed] = useState(true)
+
   return (
     <div className="mt-8 lg:grid grid-cols-3 gap-6 ">
       <div className="col-span-2">
-        <Item />
+        <ul className="flex">
+          {feed === true ? (
+            <React.Fragment>
+              <li className="flex-1 mr-2" onClick={() => setFeed(true)}>
+                <div className="cursor-pointer text-center block border border-red-500 rounded py-2 px-4 bg-red-500 hover:bg-red-600 text-white">
+                  Feed
+                </div>
+              </li>
+              <li className="flex-1 mr-2" onClick={() => setFeed(false)}>
+                <div className="cursor-pointer text-center block border border-white rounded hover:border-gray-200 text-red-500 bg-gray-200 py-2 px-4">
+                  Friends Feed
+                </div>
+              </li>
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              <li className="flex-1 mr-2" onClick={() => setFeed(true)}>
+                <div className="cursor-pointer text-center block border border-white rounded hover:border-gray-200 text-red-500 bg-gray-200 py-2 px-4">
+                  Feed
+                </div>
+              </li>
+              <li className="flex-1 mr-2" onClick={() => setFeed(false)}>
+                <div className="cursor-pointer text-center block border border-red-500 rounded py-2 px-4 bg-red-500 hover:bg-red-600 text-white">
+                  Friends Feed
+                </div>
+              </li>
+            </React.Fragment>
+          )}
+        </ul>
+        {feed === true ? <Item isFeed="true" /> : <Item isFeed="false" />}
       </div>
 
       <div className="col-span-1 lg:flex flex-col hidden  ">

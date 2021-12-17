@@ -108,7 +108,7 @@ const MainChat = () => {
   })
   return (
     <div>
-      <Navbar />
+      <Navbar currentHome="false" currentProfile="false" currentChat="true" />
       <div className="grid grid-cols-5 h-96 mt-10 border-2 border-gray-200 rounded-md  ">
         <div className="col-span-2 border-r-2 border-gray-200 overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-100  ">
           {loadingUsers === false ? (
@@ -159,7 +159,7 @@ const MainChat = () => {
           )}
         </div>
         <div className="col-span-3 flex flex-col justify-between relative z-10   ">
-          <div className="flex flex-col justify-center   mt-7 ">
+          <div className="flex flex-col justify-center overflow-y-scroll max-h-80   mt-3 ">
             {!activeConversation ? (
               <div className="flex flex-col items-center mt-16">
                 <div className="rounded-3xl border-2 border-black p-3 ">
@@ -225,7 +225,7 @@ const MainChat = () => {
           </div>
           {activeConversation ? (
             <form onSubmit={(e) => sendMessage(e)}>
-              <div className="flex justify-between absolute z-20 bottom-0 w-full items-center p-3 mt-3 border-t-2 border-gray-200 rounded-lg ">
+              <div className="flex justify-between absolute bg-gray-100 z-20 bottom-0 w-full items-center p-3 mt-3 border-t-2 border-gray-200 rounded-lg ">
                 <div className="flex gap-3">
                   <FontAwesomeIcon
                     icon={faSmile}
@@ -235,7 +235,7 @@ const MainChat = () => {
                     ref={messageRef}
                     type="text"
                     placeholder="Your message..."
-                    className="border-0 focus:outline-none text-sm"
+                    className="border-0 focus:outline-none text-sm "
                     onChange={(e) => setMessage(e.target.value)}
                   ></input>
                 </div>

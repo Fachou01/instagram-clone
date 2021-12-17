@@ -18,7 +18,7 @@ function Landing() {
   if (display) {
     return (
       <div>
-        <Navbar />
+        <Navbar currentHome="true" currentProfile="false" currentChat="false" />
         <Main />
       </div>
     )

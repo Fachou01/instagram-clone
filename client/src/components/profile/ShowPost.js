@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import axios from 'axios'
+import { useHistory } from 'react-router-dom'
 import {
   faHeart,
   faPaperPlane,
@@ -13,12 +14,20 @@ import {
 } from '@fortawesome/free-regular-svg-icons'
 import Loader from 'react-loader-spinner'
 
-const ShowPost = ({ id, picture, handlePost, reacts }) => {
+const ShowPost = ({
+  id,
+  picture,
+  handlePost,
+  reacts,
+  userPicture,
+  userNamePost,
+}) => {
   const [loading, setLoading] = useState(false)
   const [likes, setLikes] = useState(reacts)
   const [likesColor, setLikesColor] = useState(false)
   const [comment, setComment] = useState('')
   const [userComments, setUserComments] = useState([])
+  const history = useHistory()
 
   const profilePost = async () => {
     try {
@@ -110,6 +119,18 @@ const ShowPost = ({ id, picture, handlePost, reacts }) => {
       console.log(error)
     }
   }
+  const handleShowProfile = (userName, userId, fullName, userPicture) => {
+    history.push({
+      pathname: `/profile/${userName}`,
+      state: {
+        user: userName,
+        userIdFriend: userId,
+        fullName: fullName,
+        userPicture: userPicture,
+      },
+    })
+    window.location.reload()
+  }
   useEffect(() => {
     profilePost()
     getLike()
@@ -117,6 +138,7 @@ const ShowPost = ({ id, picture, handlePost, reacts }) => {
   const pictureProfile = JSON.parse(localStorage.getItem('picture'))
   const userId = JSON.parse(window.localStorage.getItem('id'))
   const userUsername = JSON.parse(window.localStorage.getItem('userName'))
+  const fullName = JSON.parse(window.localStorage.getItem('fullName'))
 
   return (
     <div className=" flex justify-center bg-gray-200 top-40 left-44   absolute shadow-2xl ">
@@ -132,12 +154,32 @@ const ShowPost = ({ id, picture, handlePost, reacts }) => {
         <div className="flex flex-col justify-between items-start ml-4 w-96 ">
           <div className="flex items-center mb-3  ">
             <img
-              src={pictureProfile}
+              onClick={() =>
+                handleShowProfile(
+                  userUsername,
+                  userId,
+                  fullName,
+                  pictureProfile
+                )
+              }
+              src={userPicture}
               width="45"
-              className="rounded-full border-2  border-gray-200"
+              className="rounded-full border-2  border-gray-200 cursor-pointer"
               alt=""
             />
-            <p className="text-xs ml-3 font-semibold">{userUsername}</p>
+            <p
+              className="text-xs ml-3 font-semibold cursor-pointer hover:text-gray-600"
+              onClick={() =>
+                handleShowProfile(
+                  userUsername,
+                  userId,
+                  fullName,
+                  pictureProfile
+                )
+              }
+            >
+              {userNamePost}
+            </p>
           </div>
           <div className="h-80 overflow-y-scroll w-full scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-100">
             {loading === true ? (
@@ -150,15 +192,33 @@ const ShowPost = ({ id, picture, handlePost, reacts }) => {
                   return (
                     <div className="flex justify-between items-center">
                       <div className=" pt-2 text-sm flex gap-2 items-center">
-                        <div className="font-semibold ">
+                        <div className="font-semibold cursor-pointer ">
                           <img
+                            onClick={() =>
+                              handleShowProfile(
+                                element.userId.userName,
+                                element.userId._id,
+                                element.userId.fullName,
+                                element.userId.userPicture
+                              )
+                            }
                             src={element.userId.userPicture}
                             width="45"
                             className="rounded-full border-2  border-gray-200"
                             alt=""
                           />
                         </div>
-                        <div className="font-semibold ml-1 ">
+                        <div
+                          className="font-semibold ml-1 cursor-pointer hover:text-gray-600 "
+                          onClick={() =>
+                            handleShowProfile(
+                              element.userId.userName,
+                              element.userId._id,
+                              element.userId.fullName,
+                              element.userId.userPicture
+                            )
+                          }
+                        >
                           {element.userId.userName} :
                         </div>
                         <div>{element.description}</div>

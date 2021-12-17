@@ -1,12 +1,15 @@
 const PostModel = require("../models/posts");
 const Comment = require("../models/comments");
+const User = require("../models/user");
 
 const express = require("express");
 const router = express.Router();
 
-router.get("/myposts/:id", async (req, res) => {
+router.get("/myposts/:userName", async (req, res) => {
   try {
-    const id = req.params.id;
+    const userName = req.params.userName;
+    const userNameBD = await User.find({ userName: userName });
+    const id = userNameBD[0]._id;
     result = await PostModel.find({ userId: id });
     res.status(200).json(result);
   } catch (error) {

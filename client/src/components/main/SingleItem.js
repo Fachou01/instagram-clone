@@ -1,5 +1,6 @@
 import React, { useRef } from 'react'
 import { useState, useEffect } from 'react'
+import { useHistory } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons'
 import axios from 'axios'
@@ -14,6 +15,8 @@ import {
 
 const SingleItem = ({
   user,
+  fullName,
+  userIdFriend,
   id,
   userPicture,
   reacts,
@@ -26,6 +29,7 @@ const SingleItem = ({
   const [likes, setLikes] = useState(reacts)
   const [likesColor, setLikesColor] = useState(false)
   const [comment, setComment] = useState('')
+  const history = useHistory()
 
   const getLike = async () => {
     const userId = await JSON.parse(localStorage.getItem('id'))
@@ -50,7 +54,6 @@ const SingleItem = ({
       })
 
       setUserComments(response.data)
-      console.log(response)
     } catch (error) {
       console.log(error)
     }
@@ -61,6 +64,17 @@ const SingleItem = ({
     })
     const newComments = userComments.filter((elt) => elt._id !== com)
     setUserComments(newComments)
+  }
+  const handleShowProfile = (userName, userId, fullName, userPicture) => {
+    history.push({
+      pathname: `/profile/${userName}`,
+      state: {
+        user: userName,
+        userIdFriend: userId,
+        fullName: fullName,
+        userPicture: userPicture,
+      },
+    })
   }
 
   useEffect(() => {
@@ -126,6 +140,7 @@ const SingleItem = ({
       }
     }
   }
+
   return (
     <div
       className="flex flex-col justify-between border-2 border-black-100  rounded-lg mb-5"
@@ -134,12 +149,23 @@ const SingleItem = ({
       <div className="flex justify-between items-center p-3">
         <div className="flex items-center">
           <img
+            onClick={() =>
+              handleShowProfile(user, userIdFriend, fullName, userPicture)
+            }
             src={userPicture}
             width="45"
-            className="rounded-full border-2  border-gray-200"
+            className="rounded-full border-2  border-gray-200 cursor-pointer "
             alt=""
           />
-          <p className="text-xs ml-3 font-semibold">{user}</p>
+          <div
+            onClick={() =>
+              handleShowProfile(user, userIdFriend, fullName, userPicture)
+            }
+          >
+            <p className="text-xs ml-3 font-semibold cursor-pointer hover:text-gray-600">
+              {user}
+            </p>
+          </div>
         </div>
         <div>
           <FontAwesomeIcon
@@ -184,7 +210,15 @@ const SingleItem = ({
       </div>
       <p className="px-3 pt-1 font-semibold ">{likes} likes</p>
       <div className="px-3 pt-1 text-sm">
-        <span className="font-semibold text-sm">{user}</span> {description}
+        <span
+          className="font-semibold text-sm cursor-pointer hover:text-gray-600"
+          onClick={() =>
+            handleShowProfile(user, userIdFriend, fullName, userPicture)
+          }
+        >
+          {user} :
+        </span>
+        {description}
       </div>
       <p className="px-3 pt-2 text-sm text-gray-400">Show more comments</p>
 
@@ -193,7 +227,19 @@ const SingleItem = ({
           return (
             <div className="flex justify-between items-center">
               <div className="px-3 pt-2 text-sm flex gap-2" key={com._id}>
-                <div className="font-semibold">{com.userId.userName} :</div>
+                <div
+                  className="font-semibold cursor-pointer hover:text-gray-600"
+                  onClick={() =>
+                    handleShowProfile(
+                      com.userId.userName,
+                      com.userId._id,
+                      com.userId.fullName,
+                      com.userId.userPicture
+                    )
+                  }
+                >
+                  {com.userId.userName} :
+                </div>
                 <div>{com.description}</div>
               </div>
               {com.userId._id === JSON.parse(localStorage.getItem('id')) && (
@@ -225,12 +271,22 @@ const SingleItem = ({
             ></input>
           </div>
           <div>
-            <button
-              type="submit"
-              className="text-blue-500 cursor-pointer text-sm font-semibold"
-            >
-              Post
-            </button>
+            {comment === '' ? (
+              <button
+                type="submit"
+                className="text-blue-500 cursor-pointer text-sm font-semibold opacity-50 "
+                disabled
+              >
+                Post
+              </button>
+            ) : (
+              <button
+                type="submit"
+                className="text-blue-500 cursor-pointer text-sm font-semibold"
+              >
+                Post
+              </button>
+            )}
           </div>
         </div>
       </form>
