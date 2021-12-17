@@ -327,6 +327,8 @@ const Profile = () => {
             <ShowPost
               id={idP}
               picture={pictureP}
+              userId={userIdFriend}
+              userFullName={fullName}
               userPicture={picture}
               userNamePost={userName}
               handlePost={handleShowPost}

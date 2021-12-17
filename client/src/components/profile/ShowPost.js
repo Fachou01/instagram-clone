@@ -16,6 +16,8 @@ import Loader from 'react-loader-spinner'
 
 const ShowPost = ({
   id,
+  userFullName,
+  userId,
   picture,
   handlePost,
   reacts,
@@ -136,7 +138,7 @@ const ShowPost = ({
     getLike()
   }, [ShowPost])
   const pictureProfile = JSON.parse(localStorage.getItem('picture'))
-  const userId = JSON.parse(window.localStorage.getItem('id'))
+  //const userId = JSON.parse(window.localStorage.getItem('id'))
   const userUsername = JSON.parse(window.localStorage.getItem('userName'))
   const fullName = JSON.parse(window.localStorage.getItem('fullName'))
 
@@ -156,10 +158,10 @@ const ShowPost = ({
             <img
               onClick={() =>
                 handleShowProfile(
-                  userUsername,
+                  userNamePost,
                   userId,
-                  fullName,
-                  pictureProfile
+                  userFullName,
+                  userPicture
                 )
               }
               src={userPicture}
@@ -171,10 +173,10 @@ const ShowPost = ({
               className="text-xs ml-3 font-semibold cursor-pointer hover:text-gray-600"
               onClick={() =>
                 handleShowProfile(
-                  userUsername,
+                  userNamePost,
                   userId,
-                  fullName,
-                  pictureProfile
+                  userFullName,
+                  userPicture
                 )
               }
             >
