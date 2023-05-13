@@ -163,8 +163,8 @@ const SingleItem = ({
           />
         </div>
       </div>
-      <div>
-        <img src={picture} width="700" height="900" alt="user" />
+      <div onDoubleClick={handleLikes}>
+        <img src={picture} width="700" height="900" alt="post" />
       </div>
       <div className="flex justify-between items-center px-3 pt-3">
         <div className="flex">

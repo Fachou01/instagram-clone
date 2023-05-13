@@ -42,7 +42,7 @@ const Item = ({ isFeed }) => {
   if (loading === false) {
     return (
       <div className="main mt-3 " ref={myRef}>
-        {data.map((post, key) => {
+        {data.map((post) => {
           return (
             <SingleItem
               key={post._id}
