@@ -33,9 +33,7 @@ const ShowPost = ({
   const profilePost = async () => {
     try {
       setLoading(true)
-      const response = await axios.get(
-        `http://localhost:3001/posts/profilepost/${id}`
-      )
+      const response = await axios.get(`http://localhost:3001/posts/profilepost/${id}`)
       setLoading(false)
       setUserComments(response.data)
     } catch (err) {
@@ -48,11 +46,7 @@ const ShowPost = ({
       setLikes(likes + 1)
       setLikesColor(true)
       try {
-        await axios.put('http://localhost:3001/like/addlike', {
-          id: id,
-          like: 1,
-        })
-        await axios.post('http://localhost:3001/like/addlike/likes', {
+        await axios.post('http://localhost:3001/likes', {
           userId: userId,
           postId: id,
         })
@@ -62,14 +56,7 @@ const ShowPost = ({
     } else {
       setLikes(likes - 1)
       setLikesColor(false)
-      await axios.put('http://localhost:3001/like/removelike', {
-        id: id,
-        likes: -1,
-      })
-      await axios.post('http://localhost:3001/like/removelike/likes', {
-        userId: userId,
-        postId: id,
-      })
+      await axios.delete(`http://localhost:3001/likes/user/${userId}?postId=${id}`)
     }
   }
   const handleComments = async (e) => {
@@ -107,10 +94,7 @@ const ShowPost = ({
   const getLike = async () => {
     const userId = await JSON.parse(localStorage.getItem('id'))
     try {
-      const response = await axios.post('http://localhost:3001/like/getlike', {
-        userId: userId,
-        postId: id,
-      })
+      const response = await axios.get(`http://localhost:3001/likes/check-like/user/${userId}?postId=${id}`);
       if (response.data.message === 'Likes found') {
         setLikesColor(true)
       } else {

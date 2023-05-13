@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom'
 import axios from 'axios'
 import { useHistory } from 'react-router-dom'
 import { useState } from 'react'
+import instagramLogo from '../../assets/images/instagram.png';
 
 const Navbar = ({ currentHome, currentProfile, currentChat }) => {
   const picture = JSON.parse(localStorage.getItem('picture'))
@@ -52,14 +53,8 @@ const Navbar = ({ currentHome, currentProfile, currentChat }) => {
         <div className="flex items-center gap-1 cursor-pointer ">
           <img
             className="w-10"
-            src="https://assets.stickpng.com/images/580b57fcd9996e24bc43c521.png"
+            src={instagramLogo}
             alt="logo"
-          />
-          <img
-            src="https://logos-marques.com/wp-content/uploads/2020/09/Instagram-Logo.png"
-            className="mt-1 hidden lg:flex"
-            alt="logo-instagram"
-            width="100"
           />
         </div>
       </Link>

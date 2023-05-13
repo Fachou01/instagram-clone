@@ -1,5 +1,4 @@
 const Friends = require("./../models/friends");
-const PostModel = require("../models/posts");
 
 const express = require("express");
 const { response } = require("express");
@@ -80,8 +79,10 @@ router.post("/deletefollow", async (req, res) => {
       { userId: userId },
       { $pull: { following: followingId } }
     );
-    res.status(200).json(responsePull);
+
+    return res.status(200).json(responsePull);
   } catch (error) {
+    console.log(error);
     res.status(200).json(error);
   }
   try {
@@ -91,6 +92,7 @@ router.post("/deletefollow", async (req, res) => {
     );
     res.status(200).json(responsePullFollower);
   } catch (error) {
+    console.log(error);
     res.status(200).json(error);
   }
 });
@@ -114,29 +116,8 @@ router.get("/myfriends/:userIdFriend&:userId", async (req, res) => {
       });
     }
   } catch (error) {
-    res.status(200).json(error);
-  }
-});
-router.get("/getallfriends/:userId", async (req, res) => {
-  const userId = req.params.userId;
-  try {
-    const response = await Friends.find({ userId: userId });
-    if (response.length === 0) {
-      res.status(200).json(response);
-      return;
-    }
-    const response2 = await PostModel.find({
-      userId: { $in: response[0].following },
-    }).populate("userId");
-
-    if (response2.length === 0) {
-      res.status(200).json(response2);
-      return;
-    } else {
-      res.status(200).json(response2);
-    }
-  } catch (error) {
-    res.status(200).json(error);
+    console.log(error);
+    return res.status(200).json(error);
   }
 });
 
@@ -147,6 +128,7 @@ router.get("/myfollows/:userId", async (req, res) => {
     res.status(200).json(response);
   } catch (error) {
     console.log(error);
+    return res.status(400).json(error);
   }
 });
 

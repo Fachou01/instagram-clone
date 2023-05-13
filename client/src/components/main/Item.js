@@ -24,7 +24,7 @@ const Item = ({ isFeed }) => {
       setLoading(true)
       try {
         const response = await axios.get(
-          `http://localhost:3001/getallfriends/${userId}`
+          `http://localhost:3001/posts/friends/${userId}`
         )
 
         setLoading(false)

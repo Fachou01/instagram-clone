@@ -16,7 +16,7 @@ const Main = () => {
       <div className="col-span-2">
         <ul className="flex">
           {feed === true ? (
-            <React.Fragment>
+            <>
               <li className="flex-1 mr-2" onClick={() => setFeed(true)}>
                 <div className="cursor-pointer text-center block border border-red-500 rounded py-2 px-4 bg-red-500 hover:bg-red-600 text-white">
                   Feed
@@ -27,9 +27,9 @@ const Main = () => {
                   Friends Feed
                 </div>
               </li>
-            </React.Fragment>
+            </>
           ) : (
-            <React.Fragment>
+            <>
               <li className="flex-1 mr-2" onClick={() => setFeed(true)}>
                 <div className="cursor-pointer text-center block border border-white rounded hover:border-gray-200 text-red-500 bg-gray-200 py-2 px-4">
                   Feed
@@ -40,7 +40,7 @@ const Main = () => {
                   Friends Feed
                 </div>
               </li>
-            </React.Fragment>
+            </>
           )}
         </ul>
         {feed === true ? <Item isFeed="true" /> : <Item isFeed="false" />}

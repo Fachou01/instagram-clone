@@ -3,9 +3,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 //Routes
-// const addUser = require("./routes/addUser");
-// const addPost = require("./routes/addPost");
-// const myPosts = require("./routes/myPosts");
+
 const likes = require("./routes/likes");
 const login = require("./routes/login");
 const conversation = require("./routes/conversation");
@@ -30,10 +28,6 @@ mongoose.connect(process.env.MONGO_URI, {
 
 // app.use("/addpost", addPost);
 
-app.use("/login", login);
-
-app.use("/like", likes);
-
 app.use("/", comments);
 
 app.use("/", conversation);
@@ -41,16 +35,10 @@ app.use("/", conversation);
 app.use("/", friends);
 
 // REF
-
+app.use("/login", login);
 app.use("/users", users);
 app.use("/posts", posts);
-
-// app.use("/friends");
-// app.use("/auth");
-// app.use("/comments");
-// app.use("/conversation");
-// app.use("/likes");
-// app.use("/messages");
+app.use("/likes", likes);
 
 app.listen(PORT, () => {
   console.log(`server listening on port ${PORT}`);
