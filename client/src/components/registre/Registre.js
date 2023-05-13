@@ -18,7 +18,7 @@ const Registre = () => {
     password: '',
   }
   const onSubmit = async (values) => {
-    const response = await axios.post('http://localhost:3001/adduser', {
+    const response = await axios.post('http://localhost:3001/users', {
       email: values.email,
       fullName: values.fullName,
       userName: values.username,

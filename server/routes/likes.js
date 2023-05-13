@@ -5,32 +5,31 @@ const express = require("express");
 const router = express.Router();
 
 router.post("/getlike", async (req, res) => {
-  const postId = req.body.postId;
-  const userId = req.body.userId;
   try {
-    const response = await Likes.find({ userId: userId, postId: postId });
-    if (response.length > 0) {
-      res.status(200).json({
+    const { postId, userId } = req.body;
+
+    const result = await Likes.find({ userId: userId, postId: postId });
+
+    if (result.length > 0) {
+      return res.status(200).json({
         message: "Likes found",
       });
     } else {
-      res.status(200).json({
+      return res.status(200).json({
         message: "Likes not found",
       });
     }
   } catch (error) {
     console.log(error);
-    response.status(401).json({
-      message: "error in db",
-    });
+    return res.status(400).json(error);
   }
 });
 
 router.put("/addlike", async (req, res) => {
-  const postId = req.body.id;
-  const like = req.body.like;
   try {
-    const newLike = await PostModel.updateOne(
+    const postId = req.body.id;
+
+    const result = await PostModel.updateOne(
       { _id: postId },
       {
         $inc: {
@@ -38,34 +37,35 @@ router.put("/addlike", async (req, res) => {
         },
       }
     );
-    res.json(newLike);
-  } catch (err) {
+    return res.status(201).json(result);
+  } catch (error) {
     console.log("error");
+    return res.status(400).json(error);
   }
 });
 
 router.post("/addlike/likes", async (req, res) => {
-  const userId = req.body.userId;
-  const postId = req.body.postId;
+  try {
+  const {userId, postId} = req.body;
 
   const newLike = new Likes({
     userId: userId,
     postId: postId,
   });
-  try {
-    const response = await newLike.save();
-    res.status(200).json(response);
-  } catch (err) {
-    res.status(500).json(error);
-    console.log(err);
+    const result = await newLike.save();
+    return res.status(200).json(result);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json(error);
+
   }
 });
 
 router.put("/removelike", async (req, res) => {
-  const postId = req.body.id;
-  const like = req.body.like;
   try {
-    const newLike = await PostModel.updateOne(
+    const postId = req.body.id;
+
+    const result = await PostModel.updateOne(
       { _id: postId },
       {
         $inc: {
@@ -73,22 +73,22 @@ router.put("/removelike", async (req, res) => {
         },
       }
     );
-    res.json(newLike);
-  } catch (err) {
+    return res.status(200).json(result);
+  } catch (error) {
     console.log("error");
+    return res.status(400).json(error);
   }
 });
 
 router.post("/removelike/likes", async (req, res) => {
-  const userId = req.body.userId;
-  const postId = req.body.postId;
-
   try {
-    const response = await Likes.deleteOne({ userId: userId, postId: postId });
-    res.status(200).json(response);
-  } catch (err) {
-    res.status(500).json(error);
+    const { userId, postId } = req.body;
+
+    const result = await Likes.deleteOne({ userId: userId, postId: postId });
+    return res.status(200).json(result);
+  } catch (error) {
     console.log(err);
+    return res.status(400).json(error);
   }
 });
 

@@ -56,10 +56,10 @@ const Profile = () => {
         urlUser === JSON.parse(localStorage.getItem('userName'))
       ) {
         setActualUser(true)
-        response = await axios.get(`http://localhost:3001/myposts/${userName}`)
+        response = await axios.get(`http://localhost:3001/posts/user/${userName}`);
       } else {
         setActualUser(false)
-        response = await axios.get(`http://localhost:3001/myposts/${urlUser}`)
+        response = await axios.get(`http://localhost:3001/posts/user/${urlUser}`);
       }
 
       setLoading(false)

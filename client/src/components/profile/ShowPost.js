@@ -1,5 +1,4 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
@@ -35,7 +34,7 @@ const ShowPost = ({
     try {
       setLoading(true)
       const response = await axios.get(
-        `http://localhost:3001/profilepost/${id}`
+        `http://localhost:3001/posts/profilepost/${id}`
       )
       setLoading(false)
       setUserComments(response.data)

@@ -14,7 +14,7 @@ const Item = ({ isFeed }) => {
       try {
         setLoading(true)
 
-        const response = await axios.get('http://localhost:3001/getposts')
+        const response = await axios.get('http://localhost:3001/posts')
         setLoading(false)
         if (myRef.current) setData(response.data)
       } catch (err) {
