@@ -14,7 +14,9 @@ const comments = require("./routes/comments");
 const friends = require("./routes/friends");
 const UserSearsh = require("./routes/users");
 //
-dotenv.config({ path: "./config/config.env" });
+dotenv.config();
+
+const PORT = process.env.PORT || 5000;
 
 const app = express();
 app.use(express.json());
@@ -44,6 +46,6 @@ app.use("/", friends);
 
 app.use("/", UserSearsh);
 
-app.listen(3001, () => {
-  console.log("listening to port 3001");
+app.listen(PORT, () => {
+  console.log(`server listening on port ${PORT}`);
 });
