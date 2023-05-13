@@ -23,7 +23,7 @@ const Navbar = ({ currentHome, currentProfile, currentChat }) => {
     localStorage.clear()
   }
   const handleSearch = async () => {
-    const response = await axios.get('http://localhost:3001/userssearch')
+    const response = await axios.get('http://localhost:3001/users')
     setUsersSearch(response.data)
   }
   const handleSearchChange = (userName) => {

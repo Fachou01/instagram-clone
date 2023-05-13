@@ -4,7 +4,7 @@ const User = require("../models/user");
 const express = require("express");
 const router = express.Router();
 
-router.get("/userssearch", async (req, res) => {
+router.get("/", async (req, res) => {
 
   try {
     const result = await User.find({});
