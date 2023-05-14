@@ -117,7 +117,7 @@ const Login = () => {
             ) : null}
             <div className="mt-8">
               Don't have an account?{' '}
-              <Link to="/">
+              <Link to="/registre">
                 <span className="text-blue-500 font-semibold cursor-pointer">
                   Sign up
                 </span>{' '}

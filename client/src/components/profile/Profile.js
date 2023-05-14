@@ -3,14 +3,15 @@ import Navbar from '../shared/Navbar'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCog, faPlusSquare } from '@fortawesome/free-solid-svg-icons'
 import { useState, useEffect } from 'react'
-import { useLocation, useHistory } from 'react-router-dom'
+import { useLocation} from 'react-router-dom'
 import AddPost from './AddPost'
 import ShowPost from './ShowPost'
 import axios from 'axios'
 import Loader from 'react-loader-spinner'
 
 const Profile = () => {
-  const myRef = useRef(null)
+  const myRef = useRef(null);
+  const [showAddPostModal, setShowAddPostModal] = useState(false);
   const [pictureP, setPictureP] = useState('')
   const [profileId, setProfileId] = useState('')
   const [idP, setIdP] = useState('')
@@ -20,11 +21,9 @@ const Profile = () => {
   const [likes, setLikes] = useState(0)
   const [actualUser, setActualUser] = useState(false)
   const [isFollowing, setIsFollowing] = useState('pending')
-  const [userIdFriendState, setUserIdFriendState] = useState('')
   const [followingCount, setIsFollowingCount] = useState(0)
   const [followerCount, setIsFollowerCount] = useState(0)
   const location = useLocation()
-  const history = useHistory()
   const urlUser = location.pathname.substring(
     location.pathname.lastIndexOf('/') + 1
   )
@@ -47,6 +46,11 @@ const Profile = () => {
     picture = location.state.userPicture
     userIdFriend = location.state.userIdFriend
   }
+
+  const handleShowAddPostModal = () => {
+    setShowAddPostModal(!showAddPostModal);
+  }
+
   const fetchMyPosts = async () => {
     var response = null
     try {
@@ -129,18 +133,11 @@ const Profile = () => {
     }
     // eslint-disable-next-line
   }, [location.pathname])
-  const [display, setDisplay] = useState(false)
+
   const [displayPost, setDisplayPost] = useState(false)
   //const fullName = JSON.parse(localStorage.getItem('fullName'))
   //const userName = JSON.parse(localStorage.getItem('userName'))
   //const picture = JSON.parse(localStorage.getItem('picture'))
-  const handleAdd = () => {
-    if (display === false) {
-      setDisplay(true)
-    } else {
-      setDisplay(false)
-    }
-  }
   const handleFollow = async () => {
     setIsFollowing('true')
     setIsFollowerCount(followerCount + 1)
@@ -195,7 +192,7 @@ const Profile = () => {
                   </div>
                 ) : null}
                 {actualUser === true ? (
-                  <div onClick={handleAdd}>
+                  <div onClick={setShowAddPostModal}>
                     <FontAwesomeIcon
                       icon={faPlusSquare}
                       className="text-xl  cursor-pointer "
@@ -333,7 +330,7 @@ const Profile = () => {
             />
           )}
         </div>
-        {display === true && <AddPost />}
+        <AddPost showModal={showAddPostModal} setShowModal={setShowAddPostModal} handleShowModal={handleShowAddPostModal}/>
       </div>
     </div>
   )

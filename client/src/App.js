@@ -16,12 +16,12 @@ const App = () => {
             <Landing />
           </div>
         </Route>
-        <Route exact path="/">
+        <Route exact path="/registre">
           <div className="lg:mx-48">
             <Registre />
           </div>
         </Route>
-        <Route exact path="/login">
+        <Route exact path="/">
           <div className="lg:mx-48">
             <Login />
           </div>
