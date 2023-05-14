@@ -139,7 +139,7 @@ const Navbar = ({ currentHome, currentProfile, currentChat }) => {
         <div className="flex opacity-50 items-center justify-center rounded-full bg-gray-200 w-10 h-10 hover:text-red-600 cursor-pointer">
           <FontAwesomeIcon icon={faHeart} className="text-xl cursor-pointer " />
         </div>
-        <Link to="/login">
+        <Link to="/">
           <div
             className="flex items-center justify-center rounded-full bg-gray-200 w-10 h-10 hover:text-red-600 cursor-pointer"
             onClick={signOut}

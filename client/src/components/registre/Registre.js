@@ -40,7 +40,7 @@ const Registre = () => {
       }, 3500)
     }
     if (response.status === 200) {
-      history.push('/login')
+      history.push('/')
     }
   }
   const validationSchema = Yup.object({
@@ -160,7 +160,7 @@ const Registre = () => {
             </div>
             <div className="mt-4 ">
               Have an account?{' '}
-              <Link to="/login">
+              <Link to="/">
                 <span className="text-blue-500 font-semibold cursor-pointer">
                   Sign in
                 </span>{' '}
