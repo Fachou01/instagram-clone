@@ -30,7 +30,7 @@ const MainChat = () => {
   const fetchingUsers = async () => {
     try {
       setLoadingUsers(true)
-      const response = await axios.get('http://localhost:3001/getusersgroup')
+      const response = await axios.get('http://localhost:3001/users')
       setLoadingUsers(false)
       setUsers(response.data)
     } catch (error) {
@@ -41,7 +41,7 @@ const MainChat = () => {
     setActiveConversation(true)
     try {
       const response1 = await axios.post(
-        'http://localhost:3001/addconversation',
+        'http://localhost:3001/conversation',
         {
           user1Id: userId,
           user2Id: id,
@@ -57,7 +57,7 @@ const MainChat = () => {
       setChat(response1.data._id)
       setLoadingConversation(true)
       const response = await axios.get(
-        `http://localhost:3001/getconversation/${response1.data._id}`
+        `http://localhost:3001/conversation/${response1.data._id}`
       )
       setLoadingConversation(false)
       setMessageList(response.data)
@@ -87,7 +87,7 @@ const MainChat = () => {
       await socket.emit('send_message', messageContent)
       setMessageList([...messageList, messageContent])
       try {
-        const response = await axios.post('http://localhost:3001/addmessage', {
+        const response = await axios.post('http://localhost:3001/messages', {
           conversationId: conversationId,
           senderId: userId,
           text: messageContent.text,

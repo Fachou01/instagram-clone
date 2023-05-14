@@ -46,9 +46,8 @@ const SingleItem = ({
   }
   const getComment = async () => {
     try {
-      const response = await axios.post('http://localhost:3001/getcomment', {
-        postId: id,
-      })
+      const response = await axios.get(`http://localhost:3001/comments/post/${id}`);
+      console.log("response", response);
 
       setUserComments(response.data)
     } catch (error) {
@@ -56,9 +55,7 @@ const SingleItem = ({
     }
   }
   const deleteComment = async (com) => {
-    await axios.post('http://localhost:3001/removecomment', {
-      commId: com,
-    })
+    await axios.delete(`http://localhost:3001/comments/${com}`);
     const newComments = userComments.filter((elt) => elt._id !== com)
     setUserComments(newComments)
   }
@@ -107,7 +104,7 @@ const SingleItem = ({
     e.preventDefault()
     if (commentRef.current.value !== '') {
       try {
-        const response = await axios.post('http://localhost:3001/addcomment', {
+        const response = await axios.post('http://localhost:3001/comments', {
           userId: userId,
           postId: id,
           comment: comment,

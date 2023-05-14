@@ -93,11 +93,11 @@ const Profile = () => {
         urlUser === JSON.parse(localStorage.getItem('userName'))
       ) {
         responseFollows = await axios.get(
-          `http://localhost:3001/myfollows/${userId}`
+          `http://localhost:3001/friends/${userId}`
         )
       } else {
         responseFollows = await axios.get(
-          `http://localhost:3001/myfollows/${userIdFriend}`
+          `http://localhost:3001/friends/${userIdFriend}`
         )
       }
       if (responseFollows.data.length === 0) {
@@ -111,7 +111,7 @@ const Profile = () => {
       }
 
       const responseFriends = await axios.get(
-        `http://localhost:3001/myfriends/${userIdFriend}&${userId}`
+        `http://localhost:3001/friends/follow/check?userId=${userId}&userIdFriend=${userIdFriend}`
       )
       if (responseFriends.data.friend === 'true') {
         setIsFollowing('true')
@@ -145,7 +145,7 @@ const Profile = () => {
     setIsFollowing('true')
     setIsFollowerCount(followerCount + 1)
     try {
-      const response = await axios.post('http://localhost:3001/addfollow', {
+      const response = await axios.post('http://localhost:3001/friends/follow', {
         userId: userId,
         followingId: profileId,
       })
@@ -157,12 +157,9 @@ const Profile = () => {
     setIsFollowing('false')
     setIsFollowerCount(followerCount - 1)
     try {
-      const response = await axios.post('http://localhost:3001/deletefollow', {
-        userId: userId,
-        followingId: profileId,
-      })
+      const response = await axios.delete(`http://localhost:3001/friends/follow?userId=${userId}&followingId=${profileId}`);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
   return (

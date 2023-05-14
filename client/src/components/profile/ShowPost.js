@@ -64,7 +64,7 @@ const ShowPost = ({
     const userUsername = JSON.parse(window.localStorage.getItem('userName'))
     e.preventDefault()
     try {
-      const response = await axios.post('http://localhost:3001/addcomment', {
+      const response = await axios.post('http://localhost:3001/comments', {
         userId: userId,
         postId: id,
         comment: comment,
@@ -85,9 +85,7 @@ const ShowPost = ({
     }
   }
   const deleteComment = async (com) => {
-    await axios.post('http://localhost:3001/removecomment', {
-      commId: com,
-    })
+    await axios.delete(`http://localhost:3001/comments/${com}`);
     const newComments = userComments.filter((elt) => elt._id !== com)
     setUserComments(newComments)
   }
