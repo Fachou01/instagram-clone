@@ -27,21 +27,18 @@ const SingleItem = ({
   const commentRef = useRef(null)
   const [userComments, setUserComments] = useState([])
   const [likes, setLikes] = useState(reacts)
-  const [likesColor, setLikesColor] = useState(false)
+  const [isLiked, setIsLiked] = useState(false)
   const [comment, setComment] = useState('')
   const history = useHistory()
 
   const getLike = async () => {
     const userId = await JSON.parse(localStorage.getItem('id'))
     try {
-      const response = await axios.post('http://localhost:3001/like/getlike', {
-        userId: userId,
-        postId: id,
-      })
+      const response = await axios.get(`http://localhost:3001/likes/check-like/user/${userId}?postId=${id}`);
       if (response.data.message === 'Likes found') {
-        if (myRef.current) setLikesColor(true)
+        if (myRef.current) setIsLiked(true)
       } else {
-        if (myRef.current) setLikesColor(false)
+        if (myRef.current) setIsLiked(false)
       }
     } catch (error) {
       console.log(error)
@@ -49,9 +46,8 @@ const SingleItem = ({
   }
   const getComment = async () => {
     try {
-      const response = await axios.post('http://localhost:3001/getcomment', {
-        postId: id,
-      })
+      const response = await axios.get(`http://localhost:3001/comments/post/${id}`);
+      console.log("response", response);
 
       setUserComments(response.data)
     } catch (error) {
@@ -59,9 +55,7 @@ const SingleItem = ({
     }
   }
   const deleteComment = async (com) => {
-    await axios.post('http://localhost:3001/removecomment', {
-      commId: com,
-    })
+    await axios.delete(`http://localhost:3001/comments/${com}`);
     const newComments = userComments.filter((elt) => elt._id !== com)
     setUserComments(newComments)
   }
@@ -84,15 +78,11 @@ const SingleItem = ({
 
   const handleLikes = async () => {
     const userId = JSON.parse(window.localStorage.getItem('id'))
-    if (likesColor === false) {
+    if (isLiked === false) {
       setLikes(likes + 1)
-      setLikesColor(true)
+      setIsLiked(true)
       try {
-        await axios.put('http://localhost:3001/like/addlike', {
-          id: id,
-          like: 1,
-        })
-        await axios.post('http://localhost:3001/like/addlike/likes', {
+        await axios.post('http://localhost:3001/likes', {
           userId: userId,
           postId: id,
         })
@@ -101,12 +91,8 @@ const SingleItem = ({
       }
     } else {
       setLikes(likes - 1)
-      setLikesColor(false)
-      await axios.put('http://localhost:3001/like/removelike', {
-        id: id,
-        likes: -1,
-      })
-      await axios.post('http://localhost:3001/like/removelike/likes', {
+      setIsLiked(false)
+      await axios.delete(`http://localhost:3001/likes/user/${userId}?postId=${id}`, {
         userId: userId,
         postId: id,
       })
@@ -118,7 +104,7 @@ const SingleItem = ({
     e.preventDefault()
     if (commentRef.current.value !== '') {
       try {
-        const response = await axios.post('http://localhost:3001/addcomment', {
+        const response = await axios.post('http://localhost:3001/comments', {
           userId: userId,
           postId: id,
           comment: comment,
@@ -174,12 +160,12 @@ const SingleItem = ({
           />
         </div>
       </div>
-      <div>
-        <img src={picture} width="700" height="900" alt="user" />
+      <div onDoubleClick={handleLikes}>
+        <img src={picture} width="700" height="900" alt="post" />
       </div>
       <div className="flex justify-between items-center px-3 pt-3">
         <div className="flex">
-          {likesColor ? (
+          {isLiked ? (
             <FontAwesomeIcon
               icon={faHeart}
               className="text-2xl cursor-pointer text-red-600 mr-0 "

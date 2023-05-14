@@ -16,7 +16,7 @@ const AddPost = () => {
     e.preventDefault()
     const id = JSON.parse(localStorage.getItem('id'))
     try {
-      const resp = await axios.post('http://localhost:3001/profile/addpost', {
+      const resp = await axios.post('http://localhost:3001/posts', {
         id: id,
         title: title,
         image: image,

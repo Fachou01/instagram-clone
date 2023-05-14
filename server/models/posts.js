@@ -21,6 +21,10 @@ const PostsSchema = new mongoose.Schema({
   description: {
     type: String,
   },
+  liked :{
+    type: Boolean,
+    default: false
+  },
   likes: {
     type: Number,
     default: 0,

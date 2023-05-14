@@ -14,7 +14,7 @@ const Item = ({ isFeed }) => {
       try {
         setLoading(true)
 
-        const response = await axios.get('http://localhost:3001/getposts')
+        const response = await axios.get('http://localhost:3001/posts')
         setLoading(false)
         if (myRef.current) setData(response.data)
       } catch (err) {
@@ -24,7 +24,7 @@ const Item = ({ isFeed }) => {
       setLoading(true)
       try {
         const response = await axios.get(
-          `http://localhost:3001/getallfriends/${userId}`
+          `http://localhost:3001/posts/friends/${userId}`
         )
 
         setLoading(false)
@@ -42,7 +42,7 @@ const Item = ({ isFeed }) => {
   if (loading === false) {
     return (
       <div className="main mt-3 " ref={myRef}>
-        {data.map((post, key) => {
+        {data.map((post) => {
           return (
             <SingleItem
               key={post._id}

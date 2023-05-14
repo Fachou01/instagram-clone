@@ -1,14 +1,49 @@
 const Friends = require("./../models/friends");
-const PostModel = require("../models/posts");
 
 const express = require("express");
-const { response } = require("express");
 const router = express.Router();
 
-router.post("/addfollow", async (req, res) => {
-  const followingId = req.body.followingId;
-  const userId = req.body.userId;
+router.get("/:userId", async (req, res) => {
+  const { userId } = req.params;
   try {
+    const response = await Friends.find({ userId: userId });
+    return res.status(200).json(response);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json(error);
+  }
+});
+
+router.get("/follow/check", async (req, res) => {
+
+  const {userId, userIdFriend} = req.query;
+
+  try {
+    const response = await Friends.find({
+      userId: userId,
+      following: userIdFriend,
+    });
+    if (response.length > 0) {
+      return res.status(200).json({
+        friend: "true",
+      });
+    }
+      return res.status(200).json({
+        friend: "false",
+      });
+    
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json(error);
+  }
+});
+
+router.post("/follow", async (req, res) => {
+  const { followingId, userId } = req.body;
+  try {
+    
+    console.log(req.body)
+
     const responseUser = await Friends.find({ userId: userId }).populate("_id");
 
     if (responseUser.length === 0) {
@@ -35,6 +70,7 @@ router.post("/addfollow", async (req, res) => {
     }
   } catch (error) {
     console.log(error);
+    return res.status(400).json(error);
   }
   //Add Followers
   try {
@@ -68,85 +104,33 @@ router.post("/addfollow", async (req, res) => {
     }
   } catch (error) {
     console.log(error);
+    return res.status(400).json(error);
   }
 });
 
-router.post("/deletefollow", async (req, res) => {
-  const followingId = req.body.followingId;
-  const userId = req.body.userId;
-
+router.delete("/follow", async (req, res) => {
+  const { userId, followingId } = req.query;
   try {
+
     const responsePull = await Friends.findOneAndUpdate(
       { userId: userId },
       { $pull: { following: followingId } }
     );
-    res.status(200).json(responsePull);
+
+     res.status(200).json(responsePull);
   } catch (error) {
-    res.status(200).json(error);
+    console.log(error);
+    return res.status(400).json(error);
   }
   try {
     const responsePullFollower = await Friends.findOneAndUpdate(
       { userId: followingId },
       { $pull: { followers: userId } }
     );
-    res.status(200).json(responsePullFollower);
-  } catch (error) {
-    res.status(200).json(error);
-  }
-});
-
-router.get("/myfriends/:userIdFriend&:userId", async (req, res) => {
-  const userIdFriend = req.params.userIdFriend;
-  const userId = req.params.userId;
-
-  try {
-    const response = await Friends.find({
-      userId: userId,
-      following: userIdFriend,
-    });
-    if (response.length > 0) {
-      res.status(200).json({
-        friend: "true",
-      });
-    } else {
-      res.status(200).json({
-        friend: "false",
-      });
-    }
-  } catch (error) {
-    res.status(200).json(error);
-  }
-});
-router.get("/getallfriends/:userId", async (req, res) => {
-  const userId = req.params.userId;
-  try {
-    const response = await Friends.find({ userId: userId });
-    if (response.length === 0) {
-      res.status(200).json(response);
-      return;
-    }
-    const response2 = await PostModel.find({
-      userId: { $in: response[0].following },
-    }).populate("userId");
-
-    if (response2.length === 0) {
-      res.status(200).json(response2);
-      return;
-    } else {
-      res.status(200).json(response2);
-    }
-  } catch (error) {
-    res.status(200).json(error);
-  }
-});
-
-router.get("/myfollows/:userId", async (req, res) => {
-  const userId = req.params.userId;
-  try {
-    const response = await Friends.find({ userId: userId });
-    res.status(200).json(response);
+    return res.status(200).json(responsePullFollower);
   } catch (error) {
     console.log(error);
+    return res.status(400).json(error);
   }
 });
 

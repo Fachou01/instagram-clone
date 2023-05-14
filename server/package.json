@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "devStart": "nodemon index.js",
-    "socketStart" : "nodemon chat.js"
+    "socketStart": "nodemon chat.js"
   },
   "author": "",
   "license": "ISC",
