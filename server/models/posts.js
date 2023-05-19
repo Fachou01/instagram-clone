@@ -1,14 +1,13 @@
 const mongoose = require("mongoose");
 const User = require("./user");
+const Likes = require("./likes");
+const Comments = require("./comments");
 
 const PostsSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: User,
-  },
-  createdAt: {
-    type: Date,
-    default: new Date(),
+    ref: 'user',
+    required: true
   },
   title: {
     type: String,
@@ -20,16 +19,21 @@ const PostsSchema = new mongoose.Schema({
   },
   description: {
     type: String,
+    default: null
   },
-  liked :{
-    type: Boolean,
-    default: false
-  },
-  likes: {
-    type: Number,
-    default: 0,
-  },
-});
+  likes: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'likes'
+  }],
+  comments: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'comment',
+  }]
+},
+  {
+    timestamps: true,
+  }
+);
 
 const Posts = mongoose.model("posts", PostsSchema);
 

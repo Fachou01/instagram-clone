@@ -3,22 +3,22 @@ const User = require("./user");
 const Post = require("./posts");
 
 const CommentSchema = new mongoose.Schema({
-  createdAt: {
-    type: Date,
-    default: new Date(),
-  },
-  description: {
-    type: String,
-  },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: User,
+    ref: 'user',
   },
   postId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: Post,
+    ref: 'posts',
   },
-});
+  content: {
+    type: String,
+  },
+},
+  {
+    timestamps: true,
+  }
+);
 
 const Comments = mongoose.model("comment", CommentSchema);
 

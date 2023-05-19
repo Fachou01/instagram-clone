@@ -13,50 +13,42 @@ import {
   faTrashAlt,
 } from '@fortawesome/free-regular-svg-icons'
 
-const SingleItem = ({
+const Post = ({
   user,
   fullName,
   userIdFriend,
   id,
   userPicture,
   reacts,
+  comments,
   description,
   picture,
 }) => {
   const myRef = useRef(null)
   const commentRef = useRef(null)
-  const [userComments, setUserComments] = useState([])
-  const [likes, setLikes] = useState(reacts)
-  const [isLiked, setIsLiked] = useState(false)
-  const [comment, setComment] = useState('')
-  const history = useHistory()
+  const [userComments, setUserComments] = useState(comments);
+  const [likes, setLikes] = useState(reacts.length);
+  const [isLiked, setIsLiked] = useState(false);
+  const [comment, setComment] = useState('');
+  const history = useHistory();
 
   const getLike = async () => {
-    const userId = await JSON.parse(localStorage.getItem('id'))
+    const userId = await JSON.parse(localStorage.getItem('id'));
     try {
       const response = await axios.get(`http://localhost:3001/likes/check-like/user/${userId}?postId=${id}`);
       if (response.data.message === 'Likes found') {
-        if (myRef.current) setIsLiked(true)
+        setIsLiked(true)
       } else {
-        if (myRef.current) setIsLiked(false)
+        setIsLiked(false)
       }
     } catch (error) {
       console.log(error)
     }
   }
-  const getComment = async () => {
-    try {
-      const response = await axios.get(`http://localhost:3001/comments/post/${id}`);
-      console.log("response", response);
 
-      setUserComments(response.data)
-    } catch (error) {
-      console.log(error)
-    }
-  }
   const deleteComment = async (com) => {
-    await axios.delete(`http://localhost:3001/comments/${com}`);
-    const newComments = userComments.filter((elt) => elt._id !== com)
+    await axios.delete(`http://localhost:3001/comments/${com}?postId=${id}`);
+    const newComments = userComments.filter((elt) => elt._id !== com);
     setUserComments(newComments)
   }
   const handleShowProfile = (userName, userId, fullName, userPicture) => {
@@ -72,57 +64,59 @@ const SingleItem = ({
   }
 
   useEffect(() => {
-    if (myRef.current) getLike()
-    if (myRef.current) getComment()
+    getLike();
   }, [])
 
   const handleLikes = async () => {
     const userId = JSON.parse(window.localStorage.getItem('id'))
     if (isLiked === false) {
-      setLikes(likes + 1)
-      setIsLiked(true)
       try {
+      setLikes(likes + 1);
+      setIsLiked(true);
         await axios.post('http://localhost:3001/likes', {
           userId: userId,
           postId: id,
         })
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     } else {
-      setLikes(likes - 1)
-      setIsLiked(false)
+      try{
+      setLikes(likes - 1);
+      setIsLiked(false);
       await axios.delete(`http://localhost:3001/likes/user/${userId}?postId=${id}`, {
         userId: userId,
         postId: id,
-      })
+      })}catch(error){
+        console.log(error);
+      }
     }
   }
   const handleComments = async (e) => {
     const userId = JSON.parse(window.localStorage.getItem('id'))
     const userUsername = JSON.parse(window.localStorage.getItem('userName'))
-    e.preventDefault()
+    e.preventDefault();
     if (commentRef.current.value !== '') {
       try {
         const response = await axios.post('http://localhost:3001/comments', {
           userId: userId,
           postId: id,
-          comment: comment,
+          content: comment,
         })
-
+        console.log("response",response);
         const comm = {
           _id: response.data._id,
           userId: {
             _id: userId,
             userName: userUsername,
           },
-          description: comment,
+          content: comment,
         }
-        setUserComments([...userComments, comm])
-        setComment('')
-        commentRef.current.value = ''
+        setUserComments([...userComments, comm]);
+        setComment('');
+        commentRef.current.value = '';
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     }
   }
@@ -141,7 +135,7 @@ const SingleItem = ({
             src={userPicture}
             width="45"
             className="rounded-full border-2  border-gray-200 cursor-pointer "
-            alt=""
+            alt="user"
           />
           <div
             onClick={() =>
@@ -165,19 +159,12 @@ const SingleItem = ({
       </div>
       <div className="flex justify-between items-center px-3 pt-3">
         <div className="flex">
-          {isLiked ? (
             <FontAwesomeIcon
               icon={faHeart}
-              className="text-2xl cursor-pointer text-red-600 mr-0 "
+              className={`text-2xl cursor-pointer mr-0 ${isLiked && ' text-red-600'}`}
               onClick={handleLikes}
             />
-          ) : (
-            <FontAwesomeIcon
-              icon={faHeart}
-              className="text-2xl cursor-pointer  mr-0 "
-              onClick={handleLikes}
-            />
-          )}
+          
           <FontAwesomeIcon
             icon={faComment}
             className="text-2xl cursor-pointer ml-4 "
@@ -226,7 +213,7 @@ const SingleItem = ({
                 >
                   {com.userId.userName} :
                 </div>
-                <div>{com.description}</div>
+                <div>{com.content}</div>
               </div>
               {com.userId._id === JSON.parse(localStorage.getItem('id')) && (
                 <div className="px-3" onClick={() => deleteComment(com._id)}>
@@ -257,22 +244,13 @@ const SingleItem = ({
             ></input>
           </div>
           <div>
-            {comment === '' ? (
               <button
                 type="submit"
-                className="text-blue-500 cursor-pointer text-sm font-semibold opacity-50 "
-                disabled
+                className={`text-blue-500 cursor-pointer text-sm font-semibold ${comment==='' && 'opacity-50' }`}
+                disabled={comment === ''}
               >
                 Post
-              </button>
-            ) : (
-              <button
-                type="submit"
-                className="text-blue-500 cursor-pointer text-sm font-semibold"
-              >
-                Post
-              </button>
-            )}
+              </button>         
           </div>
         </div>
       </form>
@@ -280,4 +258,4 @@ const SingleItem = ({
   )
 }
 
-export default SingleItem
+export default Post;

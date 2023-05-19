@@ -1,6 +1,6 @@
 import React from 'react'
 import Stories from './Stories'
-import Item from './Item'
+import Posts from './Posts'
 import { useEffect, useState } from 'react'
 import Suggestion from './Suggestion'
 import { Link } from 'react-router-dom'
@@ -9,7 +9,7 @@ const Main = () => {
   const fullName = JSON.parse(localStorage.getItem('fullName'))
   const userName = JSON.parse(localStorage.getItem('userName'))
   const picture = JSON.parse(localStorage.getItem('picture'))
-  const [feed, setFeed] = useState(true)
+  const [feed, setFeed] = useState(true);
 
   return (
     <div className="mt-8 lg:grid grid-cols-3 gap-6 ">
@@ -43,7 +43,7 @@ const Main = () => {
             </>
           )}
         </ul>
-        {feed === true ? <Item isFeed="true" /> : <Item isFeed="false" />}
+        <Posts isFeed={feed} />
       </div>
 
       <div className="col-span-1 lg:flex flex-col hidden  ">
