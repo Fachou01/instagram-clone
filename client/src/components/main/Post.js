@@ -37,9 +37,9 @@ const Post = ({
     try {
       const response = await axios.get(`http://localhost:3001/likes/check-like/user/${userId}?postId=${id}`);
       if (response.data.message === 'Likes found') {
-        setIsLiked(true)
+        setIsLiked(true);
       } else {
-        setIsLiked(false)
+        setIsLiked(false);
       }
     } catch (error) {
       console.log(error)
@@ -103,7 +103,7 @@ const Post = ({
           postId: id,
           content: comment,
         })
-        console.log("response",response);
+       
         const comm = {
           _id: response.data._id,
           userId: {

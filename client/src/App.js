@@ -1,11 +1,11 @@
-import React from 'react'
-import Landing from './components/main/Landing'
-import Login from './components/login/Login'
-import Registre from './components/registre/Registre'
-import Profile from './components/profile/Profile'
-import Error from './components/Error/Error'
-import MainChat from './components/chat/MainChat'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import React from 'react';
+import Landing from './components/main/Landing';
+import Login from './pages/Login/Login';
+import Registre from './pages/Register/Registre';
+import Profile from './components/profile/Profile';
+import Error  from './pages/Error/Error';
+import MainChat from './components/chat/MainChat';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 const App = () => {
   return (

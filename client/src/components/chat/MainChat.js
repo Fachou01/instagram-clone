@@ -47,7 +47,6 @@ const MainChat = () => {
           user2Id: id,
         }
       )
-      console.log(response1.data)
       setConversationId(response1.data._id)
       if (response1.data.user1 !== userId) {
         setReceiver(response1.data.user1)
@@ -61,7 +60,6 @@ const MainChat = () => {
       )
       setLoadingConversation(false)
       setMessageList(response.data)
-      console.log(messageList)
     } catch (error) {
       console.log(error)
     }
@@ -99,7 +97,7 @@ const MainChat = () => {
   }
   useEffect(() => {
     socket.on('receive_message', (data) => {
-      console.log(data)
+
       setSender(data.senderName)
       if (data.senderId._id === receiver) {
         setMessageList([...messageList, data])

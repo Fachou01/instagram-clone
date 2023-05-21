@@ -16,6 +16,22 @@ router.get("/", async (req, res) => {
 
 });
 
+router.get("/:username", async (req, res) => {
+
+  try {
+    const { username } = req.params;
+    const result = await User.findOne({userName:username});
+    if(!result){
+      return res.status(204).json('No user found');
+    }
+    return res.status(200).json(result);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json(error);
+  }
+
+});
+
 router.post("/", async (req, res) => {
 
   try {

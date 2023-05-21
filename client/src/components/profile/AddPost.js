@@ -23,7 +23,6 @@ const AddPost = ({showModal, setShowModal, handleShowModal}) => {
         image: image,
         description: description,
       })
-      console.log(response);
       setShowModal(!showModal)
       window.location.reload()
     } catch (error) {
