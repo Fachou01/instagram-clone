@@ -37,7 +37,7 @@ const Registre = () => {
             <div className="w-64 mb-6">
               <input
                 type="text"
-                id="fullName"
+                id="fullname"
                 name="fullName"
                 className="shadow  w-full  appearance-none border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-md"
                 onChange={formik.handleChange}

@@ -1,8 +1,8 @@
-import axios from "axios";
 import { useFormik } from "formik";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import validationSchema from './registreValidationSchema';
 import { useState } from "react";
+import { signUp } from "./registreService";
 
 const useRegistre = () => {
 
@@ -21,14 +21,9 @@ const useRegistre = () => {
     const onSubmit = async (values) => {
         try {
             setLoading(true);
-            const response = await axios.post('http://localhost:3001/users', {
-                email: values.email,
-                fullName: values.fullName,
-                userName: values.username,
-                picture: `https://avatars.dicebear.com/api/croodles/${values.username}.svg`,
-                password: values.password,
-            })
-
+            const { email, fullName, username: userName, password } = values;
+            const picture = `https://avatars.dicebear.com/api/croodles/${userName}.svg`;
+            const response = await signUp(email, fullName, userName, picture, password);
             if (response.data.message === 'email already used') {
                 setEmailErr(true);
                 setTimeout(() => {

@@ -59,7 +59,12 @@ router.get("/friends/:userId", async (req, res) => {
 
     const posts = await PostModel.find({
       userId: { $in: friends[0].following },
-    }).populate("userId").populate("likes.userId").populate('comments.userId').sort({"createdAt": "desc"});
+    }).populate("userId").populate("likes.userId").populate({
+      path: 'comments',
+      populate: {
+        path: 'userId',
+      }
+    }).sort({"createdAt": "desc"});
 
     if (posts.length === 0) {
       return res.status(200).json(posts);

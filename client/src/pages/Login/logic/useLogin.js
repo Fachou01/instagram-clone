@@ -1,8 +1,8 @@
-import { useState } from "react"
-import validationSchema from "./loginValidationSchema"
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min"
+import { useState } from "react";
+import validationSchema from "./loginValidationSchema";
+import { login } from "./loginService";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { useFormik } from "formik";
-import axios from "axios";
 
 const useLogin = () => {
 
@@ -19,10 +19,8 @@ const useLogin = () => {
     const onSubmit = async (values) => {
         try {
             setLoading(true);
-            const response = await axios.post('http://localhost:3001/login', {
-                email: values.email,
-                password: values.password,
-            })
+            const { email, password } = values;
+            const response = await login(email, password);
             if (response.status === 200) {
                 setErrorMsg(false)
                 localStorage.setItem('token', JSON.stringify(response.data.token));
