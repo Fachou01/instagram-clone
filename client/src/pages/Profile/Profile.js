@@ -14,21 +14,18 @@ const Profile = () => {
   const [userInformations, setUserInformations] = useState();
   const [userInformationsLoading, setUserInformationsLoading] = useState(true);
   const [showAddPostModal, setShowAddPostModal] = useState(false);
-  const [pictureP, setPictureP] = useState('')
-  const [idP, setIdP] = useState('')
-  const [loading, setLoading] = useState(true)
-  const [userPicture, setUserPicture] = useState([])
-  const [postsNumber, setPostsNumber] = useState(0)
-  const [likes, setLikes] = useState(0)
-  const [actualUser, setActualUser] = useState(false)
+  const [postId, setPostId] = useState();
+  const [loading, setLoading] = useState(true);
+  const [posts, setPosts] = useState([]);
+  const [postsNumber, setPostsNumber] = useState(0);
+  const [actualUser, setActualUser] = useState(false);
   const [isFollowing, setIsFollowing] = useState('pending');
-  const [followingCount, setIsFollowingCount] = useState(0)
-  const [followerCount, setIsFollowerCount] = useState(0)
+  const [followingCount, setIsFollowingCount] = useState(0);
+  const [followerCount, setIsFollowerCount] = useState(0);
   const location = useLocation()
 
   const urlUser = location.pathname.substring(location.pathname.lastIndexOf('/') + 1)
   const userId = JSON.parse(localStorage.getItem('id'))
-  var userIdFriend = null;
 
   const handleShowAddPostModal = () => {
     setShowAddPostModal(!showAddPostModal);
@@ -38,30 +35,19 @@ const Profile = () => {
     try {
       setLoading(true);
       const response = await axios.get(`http://localhost:3001/posts/user/${userInformations.userName}`);
-      const userPictures = response.data;
-      if (myRef.current) setPostsNumber(userPictures.length)
-      if (myRef.current) setUserPicture(userPictures)
+      if (myRef.current) setPostsNumber(response.data.length)
+      if (myRef.current) setPosts(response.data)
     } catch (err) {
       console.log(err)
     } finally {
       setLoading(false);
     }
   }
-  const show = (id, picture, likes) => {
-    setIdP(id)
-    setPictureP(picture)
-    setLikes(likes)
-  }
-  const handleShowPost = (state) => {
-    if (state === true) {
-      setDisplayPost(true)
-    } else {
-      setDisplayPost(false)
-    }
+  const show = (id) => {
+    setPostId(id)
   }
 
   const getUser = async () => {
-
     try {
       setUserInformationsLoading(true);
       const response = await axios.get(`http://localhost:3001/users/${urlUser}`);
@@ -70,12 +56,11 @@ const Profile = () => {
         setActualUser(true);
       }
       setUserInformations({
-        id:response.data._id,
+        id: response.data._id,
         userName: response.data.userName,
         fullName: response.data.fullName,
         picture: response.data.userPicture
       })
-
     } catch (error) {
       console.log(error);
     } finally {
@@ -85,7 +70,7 @@ const Profile = () => {
 
   const fetchFriends = async () => {
     try {
-      console.log("usrl",urlUser)
+      console.log("usrl", urlUser)
       const responseFollows = await axios.get(`http://localhost:3001/friends/${userInformations.id}`);
       if (responseFollows.data.length === 0) {
         setIsFollowingCount(0);
@@ -109,19 +94,7 @@ const Profile = () => {
       console.log(error)
     }
   }
-  useEffect(() => {
-    if (!userInformations) {
-      getUser();
-    }
-    if (userInformations) {
-      fetchPosts();
-      fetchFriends();
-    }
-    // eslint-disable-next-line
-  }, [userInformations])
 
-  const [displayPost, setDisplayPost] = useState(false)
-  
   const handleFollow = async () => {
     setIsFollowing('true')
     setIsFollowerCount(followerCount + 1)
@@ -143,6 +116,18 @@ const Profile = () => {
       console.log(error);
     }
   }
+
+  useEffect(() => {
+    if (!userInformations) {
+      getUser();
+    }
+    if (userInformations) {
+      fetchPosts();
+      fetchFriends();
+    }
+    // eslint-disable-next-line
+  }, [userInformations])
+
   return (
     <div ref={myRef}>
       <Navbar currentHome="false" currentProfile="true" currentChat="false" />
@@ -240,40 +225,6 @@ const Profile = () => {
             }
 
           </div>
-          {/*<div className="flex gap-3 px-16 mb-8">
-            <div className="flex flex-col justify-center items-center cursor-pointer p-3">
-              <img
-                src="https://avatars.dicebear.com/api/croodles/koumenji.svg"
-                className="rounded-full w-24 border-2 border-gray-300"
-                alt=""
-              />
-              <p className="text-xs mt-1 font-semibold ">Beach</p>
-            </div>
-            <div className="flex flex-col justify-center items-center cursor-pointer p-3">
-              <img
-                src="https://avatars.dicebear.com/api/croodles/hey.svg"
-                className="rounded-full w-24 border-2 border-gray-300"
-                alt=""
-              />
-              <p className="text-xs mt-1 font-semibold">Trip</p>
-            </div>
-            <div className="flex flex-col justify-center items-center cursor-pointer p-3">
-              <img
-                src="https://avatars.dicebear.com/api/croodles/h.svg"
-                className="rounded-full w-24 border-2 border-gray-300"
-                alt=""
-              />
-              <p className="text-xs mt-1 font-semibold">Trip</p>
-            </div>
-            <div className="flex flex-col justify-center items-center cursor-pointer p-3">
-              <img
-                src="https://avatars.dicebear.com/api/croodles/y.svg"
-                className="rounded-full w-24 border-2 border-gray-300"
-                alt=""
-              />
-              <p className="text-xs mt-1 font-semibold">Trip</p>
-            </div>
-          </div>*/}
           <div className="flex justify-evenly   border-t-2 border-gray-200 mb-5 ">
             <div className="text-black mt-5">POSTS</div>
             <div className="text-gray-400 mt-5">IGTV</div>
@@ -286,42 +237,32 @@ const Profile = () => {
             </div>
           ) : (
             <div className="grid grid-cols-3 max-h-80 gap-2 ">
-              <React.Fragment>
-                {userPicture.map((element, key) => {
+              <>
+                {posts.map((element, key) => {
                   return (
                     <div
                       className="col-span-1 cursor-pointer"
                       key={element._id}
                       onClick={(e) => {
                         show(element._id, element.image, element.likes)
-                        handleShowPost(true)
                       }}
                     >
                       <img
-                        className="h-40 lg:h-80   w-full object-cover	"
+                        className="h-40 lg:h-80 w-full object-cover"
                         src={element.image}
                         alt=""
                       />
                     </div>
                   )
                 })}
-              </React.Fragment>
+              </>
             </div>
-          )}
-          {displayPost === true && (
-            <ShowPost
-              id={idP}
-              picture={pictureP}
-              userId={userIdFriend}
-              userFullName={userInformations.fullName}
-              userPicture={userInformations.picture}
-              userNamePost={userInformations.userName}
-              handlePost={handleShowPost}
-              reacts={likes}
-            />
           )}
         </div>
         <AddPost showModal={showAddPostModal} setShowModal={setShowAddPostModal} handleShowModal={handleShowAddPostModal} fetchPosts={fetchPosts} />
+        {
+          postId && <ShowPost id={postId} setPostId={setPostId} />
+        }
       </div>
     </div>
   )

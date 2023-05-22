@@ -1,8 +1,8 @@
-import axios from "axios"
+import httpMain from "../../../utils/httpMain";
 
 const signUp = async (email, fullName, userName, picture, password) => {
     try {
-        const response = await axios.post('http://localhost:3001/users', {
+        const response = await httpMain.post('/users', {
             email,
             fullName,
             userName,

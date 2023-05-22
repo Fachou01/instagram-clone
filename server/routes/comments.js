@@ -32,9 +32,9 @@ router.post("/", async (req, res) => {
       content: content,
     };
 
-    const comment = await Comment.create(postComment);
-
+    let comment = await Comment.create(postComment)
     if(comment){
+      comment = await comment.populate('userId');
       post.comments.push(comment._id);
       await post.save();
       return res.status(201).json(comment);
