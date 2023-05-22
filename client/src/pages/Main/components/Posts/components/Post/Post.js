@@ -1,7 +1,6 @@
-import React from 'react'
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCaretDown } from '@fortawesome/free-solid-svg-icons'
+import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import {
   faHeart,
   faPaperPlane,
@@ -9,9 +8,9 @@ import {
   faBookmark,
   faSmile,
   faTrashAlt,
-} from '@fortawesome/free-regular-svg-icons'
-import usePost from './logic/usePost'
-import { Link } from 'react-router-dom/cjs/react-router-dom.min'
+} from '@fortawesome/free-regular-svg-icons';
+import usePost from './logic/usePost';
+import { Link } from 'react-router-dom/cjs/react-router-dom.min';
 
 const Post = ({ id, user, reacts, comments, description, picture }) => {
 
@@ -19,7 +18,7 @@ const Post = ({ id, user, reacts, comments, description, picture }) => {
 
   return (
     <div className="flex flex-col justify-between border-2 border-black-100  rounded-lg mb-5">
-      
+
       {/* Post Header */}
       <div className="flex justify-between items-center p-3">
         <Link to={`/profile/${user.userName}`}>
@@ -75,9 +74,11 @@ const Post = ({ id, user, reacts, comments, description, picture }) => {
       </div>
       <p className="px-3 pt-1 font-semibold ">{likes} likes</p>
       <div className="px-3 pt-1 text-sm">
-        <span className="font-semibold text-sm cursor-pointer hover:text-gray-600">
-          {user.userName} :
-        </span>
+        <Link to={`/profile/${user.userName}`}>
+          <span className="font-semibold text-sm cursor-pointer hover:text-gray-600">
+            {user.userName} :
+          </span>
+        </Link>
         {description}
       </div>
       <p className="px-3 pt-2 text-sm text-gray-400">Show more comments</p>
@@ -88,7 +89,7 @@ const Post = ({ id, user, reacts, comments, description, picture }) => {
           return (
             <div className="flex justify-between items-center">
               <div className="px-3 pt-2 text-sm flex gap-2" key={com._id}>
-                <Link to={`/profile/${user.userName}`}>
+                <Link to={`/profile/${com.userId.userName}`}>
                   <div className="font-semibold cursor-pointer hover:text-gray-600">
                     {com.userId.userName} :
                   </div>

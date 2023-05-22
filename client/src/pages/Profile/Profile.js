@@ -1,13 +1,13 @@
-import React, { useRef } from 'react'
-import Navbar from '../shared/Navbar'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCog, faPlusSquare } from '@fortawesome/free-solid-svg-icons'
-import { useState, useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
-import AddPost from './AddPost'
-import ShowPost from './ShowPost'
-import axios from 'axios'
-import Loader from 'react-loader-spinner'
+import React, { useRef } from 'react';
+import Navbar from '../../components/shared/Navbar';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCog, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import AddPost from './components/AddPost/AddPost';
+import ShowPost from './components/ShowPost/ShowPost';
+import axios from 'axios';
+import Loader from 'react-loader-spinner';
 
 const Profile = () => {
   const myRef = useRef(null);
@@ -36,7 +36,7 @@ const Profile = () => {
 
   const fetchPosts = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
       const response = await axios.get(`http://localhost:3001/posts/user/${userInformations.userName}`);
       const userPictures = response.data;
       if (myRef.current) setPostsNumber(userPictures.length)
@@ -82,7 +82,6 @@ const Profile = () => {
       setUserInformationsLoading(false);
     }
   }
-
 
   const fetchFriends = async () => {
     try {
@@ -322,7 +321,7 @@ const Profile = () => {
             />
           )}
         </div>
-        <AddPost showModal={showAddPostModal} setShowModal={setShowAddPostModal} handleShowModal={handleShowAddPostModal} />
+        <AddPost showModal={showAddPostModal} setShowModal={setShowAddPostModal} handleShowModal={handleShowAddPostModal} fetchPosts={fetchPosts} />
       </div>
     </div>
   )

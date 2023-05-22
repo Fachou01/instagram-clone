@@ -1,39 +1,34 @@
-import React from 'react'
-import { useState } from 'react'
-import axios from 'axios'
-import Modal from '../shared/Modal'
+import React, { useState } from 'react';
+import axios from 'axios';
+import Modal from '../../../../components/shared/Modal';
 
-const AddPost = ({showModal, setShowModal, handleShowModal}) => {
+const AddPost = ({showModal, setShowModal, handleShowModal, fetchPosts}) => {
   const [title, setTitle] = useState('');
   const [image, setImage] = useState('');
-  const [description, setDescription] = useState('')
+  const [description, setDescription] = useState('');
  
-  // const handleDiscard = (e) => {
-  //   e.preventDefault()
-  //   if (displayCard === true) setDisplayCard(false)
-  //   else setDisplayCard(true)
-  // }
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    const id = JSON.parse(localStorage.getItem('id'))
+  const handleSubmit = async (event) => {
     try {
+      event.preventDefault();
+      const id = JSON.parse(localStorage.getItem('id'));
       const response = await axios.post('http://localhost:3001/posts', {
         id: id,
         title: title,
         image: image,
         description: description,
       })
-      setShowModal(!showModal)
-      window.location.reload()
+      setTitle('');
+      setImage('');
+      setDescription('');
+      setShowModal(false);
+      fetchPosts();
     } catch (error) {
       console.log(error)
     }
   }
+  
   return (
     <Modal showModal={showModal} handleShowModal={handleShowModal} title={"Add a new post"}>
-    {/* <div className={!displayCard ? 'hidden' : 'flex'}>
-      <div className="w-2/4 h-5/6  inset-32  absolute rounded-lg  bg-white shadow-2xl border-2 border-red-600 mx-auto ">
-        <div className="flex flex-col justify-center items-center px-8 pt-6 pb-8 mb-4"> */}
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
             <label
@@ -90,7 +85,6 @@ const AddPost = ({showModal, setShowModal, handleShowModal}) => {
               <button
                 onClick={handleShowModal}
                 className="ml-3 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-red-600 border-red-600 hover:border-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-
               >
                 Discard
               </button>

@@ -1,7 +1,7 @@
 import React from 'react';
 import Login from './pages/Login/Login';
 import Registre from './pages/Register/Registre';
-import Profile from './components/profile/Profile';
+import Profile from './pages/Profile/Profile';
 import Error  from './pages/Error/Error';
 import MainChat from './components/chat/MainChat';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
