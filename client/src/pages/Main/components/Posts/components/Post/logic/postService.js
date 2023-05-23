@@ -12,12 +12,13 @@ const getPost = async (id) => {
 const addPost = async (userId,title,image,description) => {
 
     try {
-        const response = await httpMain.post('http://localhost:3001/posts', {
+        const response = await httpMain.post('/posts', {
             id: userId,
             title: title,
             image: image,
             description: description,
           })
+          console.log("response")
         return response;
     } catch (error) {
         throw error;

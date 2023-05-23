@@ -11,7 +11,7 @@ const getPosts = async () => {
 
 const getPostsByUser = async (userName) => {
     try {
-        const response = await httpMain.get(`http://localhost:3001/posts/user/${userName}`);
+        const response = await httpMain.get(`/posts/user/${userName}`);
         return response;
     } catch (error) {
         throw error;

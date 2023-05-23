@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import profileService from '../../pages/Profile/logic/profileService';
 import { useState } from 'react'
 import instagramLogo from '../../assets/images/instagram.png';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
 
 const Navbar = ({ currentHome, currentProfile, currentChat }) => {
@@ -13,6 +14,8 @@ const Navbar = ({ currentHome, currentProfile, currentChat }) => {
   const userName = JSON.parse(localStorage.getItem('userName'));
   const [usersSearch, setUsersSearch] = useState([]);
   const [filtredUsers, setFiltredUsers] = useState([]);
+
+  const history = useHistory();
 
   const signOut = () => {
     localStorage.clear()
@@ -32,6 +35,12 @@ const Navbar = ({ currentHome, currentProfile, currentChat }) => {
     } else {
       setFiltredUsers(newUsers);
     }
+  }
+
+  const showProfile = (userName) => {
+    console.log("show",showProfile)
+    history.push({
+      pathname: `/profile/${userName}`})
   }
 
   return (
@@ -57,24 +66,23 @@ const Navbar = ({ currentHome, currentProfile, currentChat }) => {
         </div>
         {filtredUsers.length !== 0 ? (
           <div className="absolute  overflow-hidden overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-100  h-44 top-16 rounded-lg -ml-8 w-72 p-3 bg-white">
-            {filtredUsers.slice(0, 10).map((data) => {
-              return (
-                <Link to={`/profile/${userName}`}>
+            {filtredUsers.slice(0, 10).map((user) => {
+              return (    
                 <div
+                  onClick={() => showProfile(user.userName)}
                   className="p-2 flex items-center cursor-pointer hover:bg-gray-200 transition duration-200 ease-in-out">
                   <div>
                     <img
-                      src={data.userPicture}
+                      src={user.userPicture}
                       width="45"
-                      className="rounded-full border-2 mr-3  border-gray-200 cursor-pointer "
+                      className="rounded-full border-2 mr-3  border-gray-200 cursor-pointer"
                     />
                   </div>
                   <div className="flex flex-col">
-                    <div className="font-semibold text-sm">{data.userName}</div>
-                    <div className="text-xs">{data.fullName}</div>
+                    <div className="font-semibold text-sm">{user.userName}</div>
+                    <div className="text-xs">{user.fullName}</div>
                   </div>
-                </div>
-                </Link>
+                </div>            
               )
             })}
           </div>

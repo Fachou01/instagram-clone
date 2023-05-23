@@ -29,7 +29,7 @@ const getFriends = async (userId) => {
 
 const checkIsFriend = async (userId, userIdFriend) => {
     try {
-        const response = await httpMain.get(`http://localhost:3001/friends/follow/check?userId=${userId}&userIdFriend=${userIdFriend}`);
+        const response = await httpMain.get(`/friends/follow/check?userId=${userId}&userIdFriend=${userIdFriend}`);
         return response;
     } catch (error) {
         throw error;
@@ -40,7 +40,7 @@ const checkIsFriend = async (userId, userIdFriend) => {
 const followUser = async (userId, userIdFriend) => {
 
     try {
-        const response = await httpMain.post('http://localhost:3001/friends/follow', { userId, followingId: userIdFriend })
+        const response = await httpMain.post('/friends/follow', { userId, followingId: userIdFriend })
         return response;
     } catch (error) {
         throw error;
@@ -50,7 +50,7 @@ const followUser = async (userId, userIdFriend) => {
 
 const unfollowUser = async (userId, userIdFriend) => {
     try {
-        const response = await httpMain.delete(userId, userIdFriend);
+        const response = await httpMain.delete('/friends/follow',userId, userIdFriend);
         return response;
     } catch (error) {
         throw error;
