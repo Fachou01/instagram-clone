@@ -1,23 +1,17 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
-import {
-  faHeart,
-  faPaperPlane,
-  faComment,
-  faSmile,
-  faTrashAlt,
-} from '@fortawesome/free-regular-svg-icons';
+import { faHeart, faPaperPlane, faComment, faSmile, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import Loader from 'react-loader-spinner';
 import { Link } from 'react-router-dom/cjs/react-router-dom.min';
 import useShowPost from './logic/useShowPost';
 
-const ShowPost = ({ id, setPostId }) => {
+const ShowPost = ({ postId, setPostId }) => {
 
-  const { post, userComments, loading, likes, isLiked, comment, setComment, handleComments, handleLikes, deleteComment } = useShowPost(id);
+  const { post, userComments, loading, likes, isLiked, comment, setComment, handleComments, handleLikes, deleteComment } = useShowPost(postId);
 
   return (
-    <div className={`${id ? "" : "hidden"} flex min-h-full items-center justify-center fixed inset-0 z-10 overflow-y-auto bg-gray-800 bg-opacity-75`}>
+    <div className={`${postId ? "" : "hidden"} flex min-h-full items-center justify-center fixed inset-0 z-10 overflow-y-auto bg-gray-800 bg-opacity-75`}>
       <div className={`flex  bg-gray-100 w-4/6 h-5/6 ${!post && " justify-center items-center"} `}>
         {!post ? <Loader type="Oval" color="#D0312D" height={50} width={50} />
           : <>
@@ -45,46 +39,46 @@ const ShowPost = ({ id, setPostId }) => {
                     </p>
                   </div>
                   <div className="h-80 overflow-y-scroll w-full scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-100">
-                    {loading === true ? (
+                    {loading ? (
                       <div className="flex justify-center items-center mt-5 ">
                         <Loader type="Oval" color="#D0312D" height={35} width={35} />
                       </div>
                     ) : (
-                      <React.Fragment>
-                        {userComments.map((element) => {
+                      <>
+                        {userComments.map((comment) => {
                           return (
                             <div className="flex justify-between items-center">
-                              <Link to={`/profile/${element.userId.userName}`}>
+                              <Link to={`/profile/${comment.userId.userName}`}>
                                 <div className=" pt-2 text-sm flex gap-2 items-center">
                                   <div className="font-semibold cursor-pointer ">
                                     <img
-                                      src={element.userId.userPicture}
+                                      src={comment.userId.userPicture}
                                       width="45"
                                       className="rounded-full border-2  border-gray-200"
                                       alt=""
                                     />
                                   </div>
                                   <div className="font-semibold ml-1 cursor-pointer hover:text-gray-600">
-                                    {element.userId.userName} :
+                                    {comment.userId.userName} :
                                   </div>
-                                  <div>{element.content}</div>
+                                  <div>{comment.content}</div>
                                 </div>
                               </Link>
-                              {element.userId._id === JSON.parse(localStorage.getItem('id')) && (
-                                  <div
-                                    className="px-3"
-                                    onClick={() => deleteComment(element._id)}
-                                  >
-                                    <FontAwesomeIcon
-                                      icon={faTrashAlt}
-                                      className="text-sm cursor-pointer "
-                                    />
-                                  </div>
-                                )}
+                              {comment.userId._id === JSON.parse(localStorage.getItem('id')) && (
+                                <div
+                                  className="px-3"
+                                  onClick={() => deleteComment(comment._id)}
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faTrashAlt}
+                                    className="text-sm cursor-pointer "
+                                  />
+                                </div>
+                              )}
                             </div>
                           )
                         })}
-                      </React.Fragment>
+                      </>
                     )}
                   </div>
                 </div>
@@ -115,7 +109,7 @@ const ShowPost = ({ id, setPostId }) => {
                     />
                   </div>
                   <div className="flex">
-                    <p className="px-3 pt-1 font-semibold ">{likes.length} likes</p>
+                    <p className="px-3 pt-1 font-semibold ">{likes} likes</p>
                   </div>
                   <div className="w-full">
                     <form onSubmit={handleComments}>

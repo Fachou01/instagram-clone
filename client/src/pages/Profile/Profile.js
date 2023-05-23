@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import Navbar from '../../components/shared/Navbar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCog, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
@@ -6,11 +6,12 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import AddPost from './components/AddPost/AddPost';
 import ShowPost from './components/ShowPost/ShowPost';
-import axios from 'axios';
 import Loader from 'react-loader-spinner';
+import postsService from '../Main/components/Posts/logic/postsService';
+import profileService from './logic/profileService';
 
 const Profile = () => {
-  const myRef = useRef(null);
+  
   const [userInformations, setUserInformations] = useState();
   const [userInformationsLoading, setUserInformationsLoading] = useState(true);
   const [showAddPostModal, setShowAddPostModal] = useState(false);
@@ -31,18 +32,19 @@ const Profile = () => {
     setShowAddPostModal(!showAddPostModal);
   }
 
-  const fetchPosts = async () => {
+  const fetchPosts = async () => {  
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:3001/posts/user/${userInformations.userName}`);
-      if (myRef.current) setPostsNumber(response.data.length)
-      if (myRef.current) setPosts(response.data)
+      const response = await postsService.getPostsByUser(userInformations.userName);
+      setPostsNumber(response.data.length);
+      setPosts(response.data);
     } catch (err) {
       console.log(err)
     } finally {
       setLoading(false);
     }
   }
+
   const show = (id) => {
     setPostId(id)
   }
@@ -50,7 +52,7 @@ const Profile = () => {
   const getUser = async () => {
     try {
       setUserInformationsLoading(true);
-      const response = await axios.get(`http://localhost:3001/users/${urlUser}`);
+      const response = await profileService.getUser(urlUser);
 
       if (response.data._id === userId) {
         setActualUser(true);
@@ -71,7 +73,7 @@ const Profile = () => {
   const fetchFriends = async () => {
     try {
       console.log("usrl", urlUser)
-      const responseFollows = await axios.get(`http://localhost:3001/friends/${userInformations.id}`);
+      const responseFollows = await profileService.getFriends(userInformations.id);
       if (responseFollows.data.length === 0) {
         setIsFollowingCount(0);
         setIsFollowerCount(0);
@@ -82,9 +84,7 @@ const Profile = () => {
         setIsFollowerCount(followers)
       }
 
-      const responseFriends = await axios.get(
-        `http://localhost:3001/friends/follow/check?userId=${userId}&userIdFriend=${userInformations.id}`
-      )
+      const responseFriends = await profileService.checkIsFriend(userId, userInformations.id);
       if (responseFriends.data.friend === 'true') {
         setIsFollowing('true');
       } else {
@@ -99,19 +99,16 @@ const Profile = () => {
     setIsFollowing('true')
     setIsFollowerCount(followerCount + 1)
     try {
-      const response = await axios.post('http://localhost:3001/friends/follow', {
-        userId: userId,
-        followingId: userInformations.id,
-      })
+      const response = await profileService.followUser(userId,userInformations.id);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
   const handleUnFollow = async () => {
     setIsFollowing('false')
     setIsFollowerCount(followerCount - 1)
     try {
-      const response = await axios.delete(`http://localhost:3001/friends/follow?userId=${userId}&followingId=${userInformations.id}`);
+      const response = await profileService.unfollowUser(userId,userInformations.id);
     } catch (error) {
       console.log(error);
     }
@@ -129,7 +126,7 @@ const Profile = () => {
   }, [userInformations])
 
   return (
-    <div ref={myRef}>
+    <div>
       <Navbar currentHome="false" currentProfile="true" currentChat="false" />
       <div>
         <div className="flex flex-col px px-6 py-12 ">
@@ -238,18 +235,16 @@ const Profile = () => {
           ) : (
             <div className="grid grid-cols-3 max-h-80 gap-2 ">
               <>
-                {posts.map((element, key) => {
+                {posts.map((post, key) => {
                   return (
                     <div
                       className="col-span-1 cursor-pointer"
-                      key={element._id}
-                      onClick={(e) => {
-                        show(element._id, element.image, element.likes)
-                      }}
+                      key={post._id}
+                      onClick={() => {show(post._id)}}
                     >
                       <img
                         className="h-40 lg:h-80 w-full object-cover"
-                        src={element.image}
+                        src={post.image}
                         alt=""
                       />
                     </div>
@@ -261,7 +256,7 @@ const Profile = () => {
         </div>
         <AddPost showModal={showAddPostModal} setShowModal={setShowAddPostModal} handleShowModal={handleShowAddPostModal} fetchPosts={fetchPosts} />
         {
-          postId && <ShowPost id={postId} setPostId={setPostId} />
+          postId && <ShowPost postId={postId} setPostId={setPostId} />
         }
       </div>
     </div>

@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import postService from "../../../../Main/components/Posts/components/Post/logic/postService";
 
@@ -9,20 +8,20 @@ const useShowPost = (id) => {
     const [post, setPost] = useState();
     const [loading, setLoading] = useState(false);
     const [userComments, setUserComments] = useState();
-    const [likes, setLikes] = useState([]);
+    const [likes, setLikes] = useState(0);
     const [isLiked, setIsLiked] = useState(false);
     const [comment, setComment] = useState('');
 
     const getPost = async () => {
         try {
             setLoading(true);
-            const response = await axios.get(`http://localhost:3001/posts/${id}`);
+            const response = await postService.getPost(id);
             setPost(response.data);
             setUserComments(response.data.comments);
-            setLikes(response.data.likes);
+            setLikes(response.data.likes.length);
         } catch (error) {
             console.log(error);
-        } finally{
+        } finally {
             setLoading(false);
         }
     }
@@ -50,9 +49,9 @@ const useShowPost = (id) => {
 
         if (isLiked === false) {
             try {
+                const response = await postService.addLike(userId, id);
                 setLikes(likes + 1);
                 setIsLiked(true);
-                await postService.addLike(userId, id);
             } catch (error) {
                 console.log(error);
             }
@@ -60,18 +59,17 @@ const useShowPost = (id) => {
             try {
                 setLikes(likes - 1);
                 setIsLiked(false);
-                await postService.deleteLike(userId, id);
+                const reponse = await postService.deleteLike(userId, id);
             } catch (error) {
                 console.log(error);
             }
         }
     }
     const handleComments = async (e) => {
-
         e.preventDefault();
         if (comment !== '') {
             try {
-                const response = await postService.addComment(userId, id,comment);
+                const response = await postService.addComment(userId, id, comment);
                 const comm = response.data;
 
                 setUserComments([...userComments, comm]);
@@ -97,7 +95,7 @@ const useShowPost = (id) => {
         setComment,
         handleComments,
         handleLikes,
-        deleteComment,    
+        deleteComment,
     }
 }
 export default useShowPost;

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { getFriendsPosts, getPosts } from "./postsService"
+import postsService from "./postsService"
 
 const usePosts = (isFeed) => {
 
@@ -10,7 +10,7 @@ const usePosts = (isFeed) => {
     const fetchPosts = async () => {
         try {
             setLoading(true);
-            const response = await getPosts();
+            const response = await postsService.getPosts();
             setPosts(response.data);
         } catch (error) {
             console.log(error);
@@ -22,7 +22,7 @@ const usePosts = (isFeed) => {
     const fetchFriendsPosts = async (userId) => {
         try {
             setLoading(true);
-            const response = await getFriendsPosts(userId);
+            const response = await postsService.getFriendsPosts(userId);
             setPosts(response.data);
         } catch (error) {
             console.log(error);

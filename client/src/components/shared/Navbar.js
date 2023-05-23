@@ -1,52 +1,39 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faHome,
-  faPaperPlane,
-  faCompass,
-  faHeart,
-  faSignOutAlt,
-} from '@fortawesome/free-solid-svg-icons'
+import { faHome, faPaperPlane, faCompass, faHeart, faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom'
-import axios from 'axios'
-import { useHistory } from 'react-router-dom'
+import profileService from '../../pages/Profile/logic/profileService';
 import { useState } from 'react'
 import instagramLogo from '../../assets/images/instagram.png';
 
+
 const Navbar = ({ currentHome, currentProfile, currentChat }) => {
-  const picture = JSON.parse(localStorage.getItem('picture'))
-  const userName = JSON.parse(localStorage.getItem('userName'))
-  const [usersSearch, setUsersSearch] = useState([])
-  const [filtredUsers, setFiltredUsers] = useState([])
-  const history = useHistory()
+
+  const picture = JSON.parse(localStorage.getItem('picture'));
+  const userName = JSON.parse(localStorage.getItem('userName'));
+  const [usersSearch, setUsersSearch] = useState([]);
+  const [filtredUsers, setFiltredUsers] = useState([]);
+
   const signOut = () => {
     localStorage.clear()
   }
+
   const handleSearch = async () => {
-    const response = await axios.get('http://localhost:3001/users')
-    setUsersSearch(response.data)
+    const response = await profileService.getUsers();
+    setUsersSearch(response.data);
   }
+
   const handleSearchChange = (userName) => {
     const newUsers = usersSearch.filter((data) => {
-      return data.userName.toLowerCase().includes(userName.toLowerCase())
+      return data.userName.toLowerCase().includes(userName.toLowerCase());
     })
     if (userName === '') {
       setFiltredUsers([])
     } else {
-      setFiltredUsers(newUsers)
+      setFiltredUsers(newUsers);
     }
   }
-  const handleShowProfile = (userName, userId, fullName, userPicture) => {
-    history.push({
-      pathname: `/profile/${userName}`,
-      state: {
-        user: userName,
-        userIdFriend: userId,
-        fullName: fullName,
-        userPicture: userPicture,
-      },
-    })
-  }
+
   return (
     <div className="flex sticky top-0 w-full bg-white justify-between items-center border-b-2 border-black-100 h-20  p-5  ">
       <Link to="/main">
@@ -72,17 +59,9 @@ const Navbar = ({ currentHome, currentProfile, currentChat }) => {
           <div className="absolute  overflow-hidden overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-100  h-44 top-16 rounded-lg -ml-8 w-72 p-3 bg-white">
             {filtredUsers.slice(0, 10).map((data) => {
               return (
+                <Link to={`/profile/${userName}`}>
                 <div
-                  className="p-2 flex items-center cursor-pointer hover:bg-gray-200 transition duration-200 ease-in-out"
-                  onClick={() =>
-                    handleShowProfile(
-                      data.userName,
-                      data._id,
-                      data.fullName,
-                      data.userPicture
-                    )
-                  }
-                >
+                  className="p-2 flex items-center cursor-pointer hover:bg-gray-200 transition duration-200 ease-in-out">
                   <div>
                     <img
                       src={data.userPicture}
@@ -95,6 +74,7 @@ const Navbar = ({ currentHome, currentProfile, currentChat }) => {
                     <div className="text-xs">{data.fullName}</div>
                   </div>
                 </div>
+                </Link>
               )
             })}
           </div>

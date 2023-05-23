@@ -1,5 +1,29 @@
 import httpMain from "../../../../../../../utils/httpMain";
 
+const getPost = async (id) => {
+    try {
+        const response = await httpMain.get(`/posts/${id}`);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+
+const addPost = async (userId,title,image,description) => {
+
+    try {
+        const response = await httpMain.post('http://localhost:3001/posts', {
+            id: userId,
+            title: title,
+            image: image,
+            description: description,
+          })
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+
 const getLike = async (userId, postId) => {
     try {
         const response = await httpMain.get(`/likes/check-like/user/${userId}?postId=${postId}`);
@@ -54,6 +78,8 @@ const deleteComment = async (commentId, postId) => {
 }
 
 const postService = {
+    getPost,
+    addPost,
     getLike,
     addLike,
     deleteLike,
