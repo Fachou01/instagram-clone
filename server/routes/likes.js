@@ -1,5 +1,5 @@
-const PostModel = require("../models/posts");
-const Likes = require("../models/likes");
+const Like = require('../models/likes');
+const Post = require("../models/posts");
 
 const express = require("express");
 const router = express.Router();
@@ -9,20 +9,20 @@ router.get("/check-like/user/:userId", async (req, res) => {
     const { userId } = req.params;
     const { postId } = req.query;
 
-    const like = await Likes.findOne({ userId: userId, postId: postId });
+    const like = await Like.findOne({userId,postId});
 
     if (like) {
       return res.status(200).json({
         message: "Likes found",
       });
     }
-      return res.status(200).json({
-        message: "Likes not found",
-      });
-  
+    return res.status(200).json({
+      message: "Likes not found",
+    });
+
   } catch (error) {
     console.log(error);
-    return res.status(400).json(error);
+    return res.status(400).json('error occured');
   }
 });
 
@@ -30,31 +30,29 @@ router.post("/", async (req, res) => {
   try {
     const { postId, userId } = req.body;
 
-    const like = new Likes({
-      userId: userId,
-      postId: postId,
-    });
+    const post = await Post.findById(postId);
 
-    const likeSaved = await like.save();
-
-    if(likeSaved){
-
-      const result = await PostModel.updateOne(
-        { _id: postId },
-        {
-          $inc: {
-            likes: +1,
-          },
-        }
-      );
-      return res.status(201).json(result);
+    if(!post){
+      return res.status(400).json('Post not found');
     }
 
-    throw new Error("Like not saved");
-    
+    const postLike = {
+      userId: userId,
+      postId: postId
+    }
+
+    const like = await Like.create(postLike);
+
+    if (like) {
+      post.likes.push(like._id);
+      const result = await post.save();
+      return res.status(201).json(result);
+    }
+    return res.status(400).json('error occured');
+
   } catch (error) {
     console.log(error);
-    return res.status(400).json(error);
+    return res.status(400).json('error occured');
   }
 });
 
@@ -63,20 +61,24 @@ router.delete("/user/:userId", async (req, res) => {
     const { userId } = req.params;
     const { postId } = req.query;
 
-    const like = await Likes.deleteOne({ userId: userId, postId: postId });
+    const like = await Like.findOneAndDelete({userId,postId});
 
-    const result = await PostModel.updateOne(
-      { _id: postId },
-      {
-        $inc: {
-          likes: -1,
-        },
-      }
-    );
-    return res.status(200).json(result);
+    if(like){
+      const result = await Post.findByIdAndUpdate(
+        { _id: postId },
+        {
+          $pull: {
+            likes: like._id,
+          },
+        }
+      );
+      return res.status(200).json(result);
+    }
+    return res.status(400).json('error occured');
+
   } catch (error) {
     console.log(error);
-    return res.status(400).json(error);
+    return res.status(400).json('error occured');
   }
 });
 

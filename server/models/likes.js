@@ -3,20 +3,20 @@ const User = require("./user");
 const Post = require("./posts");
 
 const LikesSchema = new mongoose.Schema({
-  createdAt: {
-    type: Date,
-    default: new Date(),
-  },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: User,
+    ref: 'user',
   },
   postId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: Post,
+    ref: 'posts',
   },
-});
-
+},
+  {
+    timestamps: true,
+  }
+);
+LikesSchema.index({ userId: 1, postId: 1 }, { unique: true });
 const Likes = mongoose.model("likes", LikesSchema);
 
 module.exports = Likes;
